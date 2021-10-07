@@ -1,0 +1,12 @@
+# IDE specific
+.idea
+
+# Project specific
+vendor
+build
+.env
+
+# OS specific
+.DS_Store
+
+storage/logs/*
