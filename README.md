@@ -2,7 +2,7 @@ Kanvas Social
 ============
 
 [![Latest Stable Version](https://poser.pugx.org/kanvas/social/v)](//packagist.org/social/kanvas/social) [![Total Downloads](https://poser.pugx.org/kanvas/social/downloads)](//packagist.org/social/kanvas/social) [![Latest Unstable Version](https://poser.pugx.org/kanvas/social/v/unstable)](//packagist.org/social/kanvas/social) 
-[![Tests](https://github.com/bakaphp/kanvas-social/workflows/Tests/badge.svg?branch=development)](https://github.com/bakaphp/kanvas-social/actions?query=workflow%3ATests)
+[![Tests](https://github.com/bakaphp/social/workflows/Tests/badge.svg?branch=master)](https://github.com/bakaphp/social/actions?query=workflow%3ATests)
 
 Kanvas Social package , allows you to implement a social layer to any kanvas app.
 
