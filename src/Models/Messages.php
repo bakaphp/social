@@ -15,6 +15,7 @@ use Kanvas\Social\Contracts\Interactions\EntityInteractionsTrait;
 use Kanvas\Social\Contracts\Messages\MessageableEntityInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\ElasticMessages;
+use Kanvas\Social\Traits\Topics\HasTopic;
 use Phalcon\Di;
 
 class Messages extends BaseModel implements MessagesInterface, MessageableEntityInterface
@@ -23,6 +24,7 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     use FileSystemModelTrait;
     use ElasticIndexModelTrait;
     use CustomFieldsTrait;
+    use HasTopic;
 
     use ElasticIndexModelTrait, CustomFieldsTrait{
         CustomFieldsTrait::afterDelete insteadof ElasticIndexModelTrait;
