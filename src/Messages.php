@@ -91,11 +91,14 @@ class Messages
      */
     public static function create(UserInterface $user, string $verb, array $message = [], ?MessageableEntityInterface $object = null, bool $sendToUserFeeds = true) : MessagesInterface
     {
+        if (!$messageType = MessageTypesModel::getTypeByVerb($verb)) {
+            throw new \Exception('Message type not found');
+        }
         $newMessage = new MessagesModel();
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
         $newMessage->companies_id = $user->getDefaultCompany()->getId();
         $newMessage->users_id = (int) $user->getId();
-        $newMessage->message_types_id = MessageTypesModel::getTypeByVerb($verb)->getId();
+        $newMessage->message_types_id = $messageType->getId();
         $newMessage->message = json_encode($message);
         $newMessage->created_at = date('Y-m-d H:i:s');
         $newMessage->saveOrFail();

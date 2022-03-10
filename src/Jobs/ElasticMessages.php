@@ -35,7 +35,7 @@ class ElasticMessages extends Job implements QueueableJobInterface
      */
     public function handle() : bool
     {
-        Indices::createIfNotExist($this->elasticMessage);
+        Indices::createIfNotExist($this->elasticMessage, 3, 1000);
         $log = null;
         if ($this->message->isIndexable()) {
             $this->elasticMessage->add();
