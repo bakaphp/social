@@ -58,7 +58,6 @@ class Follow
     public static function follow(UserInterface $user, ModelInterface $entity) : bool
     {
         $follow = UsersFollows::getByUserAndEntity($user, $entity);
-
         if ($follow) {
             return $follow->unFollow();
         }
@@ -74,8 +73,8 @@ class Follow
         $follow->companies_branches_id = $globalFollowing ? 0 : $user->currentBranchId();
         $follow->saveOrFail();
 
-        $follow->increment(Interactions::FOLLOWING, get_class($entity));
-        $user->increment(Interactions::FOLLOWERS, get_class($entity));
+        // $follow->increment(Interactions::FOLLOWING, get_class($entity));
+        // $user->increment(Interactions::FOLLOWERS, get_class($entity));
 
         return $follow->isFollowing();
     }
@@ -149,5 +148,22 @@ class Follow
                 'entityName' => get_class($entity)
             ]
         ]);
+    }
+
+    public static function getFollowers(
+        ModelInterface $entity,
+        int $page = 1,
+        int $limit = 25
+    ) {
+        $followers = UsersFollows::find([
+            'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
+            'bind' => [
+                'entityId' => $entity->getId(),
+                'entityName' => get_class($entity)
+            ],
+            'limit' => $limit
+        ]);
+
+        return $followers;
     }
 }
