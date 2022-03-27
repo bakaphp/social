@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
+use Canvas\Models\Apps;
+use Canvas\Models\Companies;
 use Exception;
 use Kanvas\Social\Jobs\RemoveMessagesReactions;
 use Kanvas\Social\Models\Reactions as ReactionsModel;
@@ -48,7 +50,7 @@ class Reactions
 
         if ($userReaction) {
             self::removeUserReaction($userReaction, $user);
-            return (bool) $userReaction->is_deleted;
+            return false;
         } elseif (!$userReaction) {
             $userReaction = new UsersReactions();
             $userReaction->users_id = $user->getId();
@@ -58,7 +60,7 @@ class Reactions
             $userReaction->saveOrFail();
         }
 
-        return (bool) $userReaction->is_deleted;
+        return true;
     }
 
     /**
@@ -72,11 +74,13 @@ class Reactions
     public static function getReactionByName(string $reactionName, UserInterface $user) : ReactionsModel
     {
         return ReactionsModel::findFirstOrFail([
-            'conditions' => 'name = :reaction: AND apps_id = :appId: AND companies_id = :companyId: and is_deleted = 0',
+            'conditions' => 'name = :reaction: AND apps_id IN (:appId:, :defaultApp:) AND companies_id IN (:companyId:, :defaultCompany:)  AND is_deleted = 0',
             'bind' => [
                 'reaction' => $reactionName,
                 'companyId' => $user->getDefaultCompany()->getId(),
-                'appId' => Di::getDefault()->get('app')->getId()
+                'appId' => Di::getDefault()->get('app')->getId(),
+                'defaultApp' => Apps::CANVAS_DEFAULT_APP_ID,
+                'defaultCompany' => Companies::GLOBAL_COMPANIES_ID
             ]
         ]);
     }
@@ -92,11 +96,13 @@ class Reactions
     public static function getReactionByEmoji(string $reactionEmoji, UserInterface $user) : ReactionsModel
     {
         return ReactionsModel::findFirstOrFail([
-            'conditions' => 'icon = :emoji: AND apps_id = :appId: AND companies_id = :companyId: AND is_deleted = 0',
+            'conditions' => 'icon = :emoji: AND apps_id IN (:appId:, :defaultApp:) AND companies_id IN (:companyId:, :defaultCompany:) AND is_deleted = 0',
             'bind' => [
                 'emoji' => $reactionEmoji,
                 'companyId' => $user->getDefaultCompany()->getId(),
-                'appId' => Di::getDefault()->get('app')->getId()
+                'appId' => Di::getDefault()->get('app')->getId(),
+                'defaultApp' => Apps::CANVAS_DEFAULT_APP_ID,
+                'defaultCompany' => Companies::GLOBAL_COMPANIES_ID
             ]
         ]);
     }

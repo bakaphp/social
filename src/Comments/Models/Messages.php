@@ -6,6 +6,7 @@ namespace Kanvas\Social\Comments\Models;
 use Kanvas\Social\Comments\Model;
 use Kanvas\Social\ElasticDocuments\Messages as ElasticMessagesDocument;
 use Kanvas\Social\Jobs\ElasticMessages;
+use Kanvas\Social\Models\Messages as MessagesModel;
 
 class Messages extends Model
 {
@@ -22,7 +23,7 @@ class Messages extends Model
 
         $this->belongsTo(
             'message_id',
-            Messages::class,
+            MessagesModel::class,
             'id',
             [
                 'reusable' => true,
