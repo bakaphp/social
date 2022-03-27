@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Kanvas\Social\Models;
 
-use Canvas\Models\Apps;
+use Canvas\Enums\App;
 use Canvas\Models\Behaviors\Uuid;
 use Phalcon\Di;
 
@@ -87,7 +87,7 @@ class MessageTypes extends BaseModel
             'bind' => [
                 'verb' => $verb,
                 'currentAppId' => Di::getDefault()->get('app')->getId(),
-                'defaultApp' => Apps::CANVAS_DEFAULT_APP_ID
+                'defaultApp' => App::CORE_APP_ID
             ]
         ]);
     }

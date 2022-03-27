@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
-use Canvas\Models\Apps;
-use Canvas\Models\Companies;
+use Canvas\Enums\App;
 use Exception;
 use Kanvas\Social\Jobs\RemoveMessagesReactions;
 use Kanvas\Social\Models\Reactions as ReactionsModel;
@@ -79,8 +78,8 @@ class Reactions
                 'reaction' => $reactionName,
                 'companyId' => $user->getDefaultCompany()->getId(),
                 'appId' => Di::getDefault()->get('app')->getId(),
-                'defaultApp' => Apps::CANVAS_DEFAULT_APP_ID,
-                'defaultCompany' => Companies::GLOBAL_COMPANIES_ID
+                'defaultApp' => App::CORE_APP_ID,
+                'defaultCompany' => App::GLOBAL_COMPANY_ID
             ]
         ]);
     }
@@ -101,8 +100,8 @@ class Reactions
                 'emoji' => $reactionEmoji,
                 'companyId' => $user->getDefaultCompany()->getId(),
                 'appId' => Di::getDefault()->get('app')->getId(),
-                'defaultApp' => Apps::CANVAS_DEFAULT_APP_ID,
-                'defaultCompany' => Companies::GLOBAL_COMPANIES_ID
+                'defaultApp' => App::CORE_APP_ID,
+                'defaultCompany' => App::GLOBAL_COMPANY_ID
             ]
         ]);
     }
