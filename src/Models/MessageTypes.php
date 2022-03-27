@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kanvas\Social\Models;
 
+use Canvas\Enums\App;
 use Canvas\Models\Behaviors\Uuid;
 use Phalcon\Di;
 
@@ -82,10 +83,11 @@ class MessageTypes extends BaseModel
     public static function getTypeByVerb(string $verb) : ?self
     {
         return MessageTypes::findFirst([
-            'conditions' => 'verb = :verb: AND apps_id = :currentAppId: AND is_deleted = 0',
+            'conditions' => 'verb = :verb: AND apps_id IN (:currentAppId:, :defaultApp:) AND is_deleted = 0',
             'bind' => [
                 'verb' => $verb,
-                'currentAppId' => Di::getDefault()->get('app')->getId()
+                'currentAppId' => Di::getDefault()->get('app')->getId(),
+                'defaultApp' => App::CORE_APP_ID
             ]
         ]);
     }
