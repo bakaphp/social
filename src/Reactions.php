@@ -115,7 +115,7 @@ class Reactions
      *
      * @return Reactions
      */
-    public static function createReaction(string $reactionName, UserInterface $user, string $reactionEmoji = null) : ReactionsModel
+    public static function createReaction(string $reactionName, ?UserInterface $user = null, string $reactionEmoji = null) : ReactionsModel
     {
         if ($reactionEmoji && !StringFormatter::isStringEmoji($reactionEmoji)) {
             throw new Exception('Emoji must have a valid unicode format');
@@ -124,7 +124,7 @@ class Reactions
         $reaction = new ReactionsModel();
         $reaction->name = $reactionName;
         $reaction->apps_id = Di::getDefault()->get('app')->getId();
-        $reaction->companies_id = $user->getDefaultCompany()->getId();
+        $reaction->companies_id = $user ? $user->getDefaultCompany()->getId() : App::GLOBAL_COMPANY_ID;
         $reaction->icon = $reactionEmoji;
         $reaction->saveOrFail();
 
