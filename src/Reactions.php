@@ -92,13 +92,13 @@ class Reactions
      *
      * @return ReactionsModel
      */
-    public static function getReactionByEmoji(string $reactionEmoji, UserInterface $user) : ReactionsModel
+    public static function getReactionByEmoji(string $reactionEmoji, ?UserInterface $user = null) : ReactionsModel
     {
         return ReactionsModel::findFirstOrFail([
             'conditions' => 'icon = :emoji: AND apps_id IN (:appId:, :defaultApp:) AND companies_id IN (:companyId:, :defaultCompany:) AND is_deleted = 0',
             'bind' => [
                 'emoji' => $reactionEmoji,
-                'companyId' => $user->getDefaultCompany()->getId(),
+                'companyId' => $user ? $user->getDefaultCompany()->getId() : App::GLOBAL_COMPANY_ID,
                 'appId' => Di::getDefault()->get('app')->getId(),
                 'defaultApp' => App::CORE_APP_ID,
                 'defaultCompany' => App::GLOBAL_COMPANY_ID
