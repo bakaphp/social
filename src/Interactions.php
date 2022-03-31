@@ -19,7 +19,7 @@ class Interactions
      *
      * @return bool
      */
-    public static function add(UserInterface $user, ModelInterface $entity, string $interactionName) : bool
+    public static function add(UserInterface $user, ModelInterface $entity, string $interactionName) : UsersInteractions
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
