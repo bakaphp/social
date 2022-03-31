@@ -27,6 +27,7 @@ class Interactions
 
         if ($userInteraction && !InteractionsModel::isComment($interaction->getId())) {
             self::removeInteraction($userInteraction);
+            return $userInteraction;
         } elseif (!$userInteraction) {
             $userInteraction = new UsersInteractions();
             $userInteraction->users_id = $user->getId();
@@ -37,7 +38,7 @@ class Interactions
         }
 
         //if is_deleted = 0 means it was added
-        return (bool) !$userInteraction->is_deleted;
+        return $userInteraction;
     }
 
     /**
