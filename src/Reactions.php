@@ -49,7 +49,7 @@ class Reactions
 
         if ($userReaction) {
             self::removeUserReaction($userReaction, $user);
-            return false;
+            return $userReaction;
         } elseif (!$userReaction) {
             $userReaction = new UsersReactions();
             $userReaction->users_id = $user->getId();
@@ -59,7 +59,7 @@ class Reactions
             $userReaction->saveOrFail();
         }
 
-        return true;
+        return $userReaction;
     }
 
     /**
