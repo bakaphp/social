@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
+use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
 use Kanvas\Social\Models\UsersFollows;
 use Phalcon\Di;
@@ -149,5 +150,53 @@ class Follow
                 'entityName' => get_class($entity)
             ]
         ]);
+    }
+
+    /**
+     * getFollowers.
+     *
+     * @param  ModelInterface $entity
+     *
+     * @return Simple
+     */
+    public static function getFollowers(ModelInterface $entity) : Simple
+    {
+        return UsersFollows::find([
+            'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
+            'bind' => [
+                'entityId' => $entity->getId(),
+                'entityName' => get_class($entity)
+            ]
+        ]);
+    }
+    /**
+     * addToFeed.
+     *
+     * @param  UserInterface $user
+     * @param  MessagesInterface $message
+     * @param  ?array $notes
+     *
+     * @return void
+     */
+    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes) : void
+    {
+        $feed = UserMessages::findFirst([
+            'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+            'bind' => [
+                'userId' => $user->getId(),
+                'messageId' => $message->getId()
+            ]
+        ]);
+
+        if (!$feed) {
+            $feed = new UserMessages();
+            $feed->users_id = $user->getId();
+            $feed->messages_id = $message->getId();
+            $feed->saveOrFail();
+            $feed->set('notes', $notes);
+        } else {
+            $notes = array_merge($feed->get('notes'), $notes);
+            $feed->set('notes', $notes);
+        }
     }
 }

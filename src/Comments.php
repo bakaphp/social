@@ -44,7 +44,8 @@ class Comments
     public static function add(string $messageId, string $message, UserInterface $user) : MessageComments
     {
         $messageData = Messages::getByIdOrFail($messageId);
-        return $messageData->comment($message, $user);
+        $comment = $messageData->comment($message, $user);
+        $comment->fireToQueue('comment:created', $comment);
     }
 
     /**

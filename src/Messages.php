@@ -103,6 +103,7 @@ class Messages
         if ($object) {
             $newMessage->addSystemModules($object);
         }
+        $newMessage->fireToQueue('messages:created', $newMessage, ['entity' => $object]);
 
         if ($sendToUserFeeds) {
             Distributions::sendToUsersFeeds($newMessage, $user);

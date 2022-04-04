@@ -7,9 +7,12 @@ use Baka\Contracts\Auth\UserInterface;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Paginator\Adapter\Model;
+use Canvas\Contracts\CustomFields\CustomFieldsTrait;
 
 class UserMessages extends BaseModel
 {
+    use CustomFieldsTrait;
+    
     public int $messages_id;
     public int $users_id;
 

@@ -16,6 +16,7 @@ use Kanvas\Social\Contracts\Messages\MessageableEntityInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\ElasticMessages;
 use Phalcon\Di;
+use Canvas\Contracts\EventManagerAwareTrait;
 
 class Messages extends BaseModel implements MessagesInterface, MessageableEntityInterface
 {
@@ -23,6 +24,7 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     use FileSystemModelTrait;
     use ElasticIndexModelTrait;
     use CustomFieldsTrait;
+    use EventManagerAwareTrait;
 
     use ElasticIndexModelTrait, CustomFieldsTrait{
         CustomFieldsTrait::afterDelete insteadof ElasticIndexModelTrait;

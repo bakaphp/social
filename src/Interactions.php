@@ -35,6 +35,7 @@ class Interactions
             $userInteraction->entity_id = $entity->getId();
             $userInteraction->interactions_id = $interaction->getId();
             $userInteraction->saveOrFail();
+            $userInteraction->fireToQueue('interaction:created', $userInteraction);
         }
 
         //if is_deleted = 0 means it was added
@@ -170,5 +171,28 @@ class Interactions
                 'entityId' => $entity->getId(),
             ]
         ]);
+    }
+
+    public static function getEntityByInteractionType(UserInterface $user, string $interactionName) : array
+    {
+        $interaction = InteractionsModel::getByName($interactionName);
+
+        $usersInteractions = UsersInteractions::count([
+            'conditions' => 'users_id = :userId:  
+                            AND interactions_id = :interactionId:  
+                            AND entity_namespace = :namespace: 
+                            AND is_deleted = 0',
+            'bind' => [
+                'userId' => $user->getId(),
+                'interactionId' => $interaction->getId(),
+                'namespace' => $entityNamespace,
+            ]
+        ]);
+
+        $entities = [];
+        foreach ($usersInteractions as $userInteraction) {
+            $entities[] = $userInteraction->entityData;
+        }
+        return $entities;
     }
 }
