@@ -46,6 +46,7 @@ class Comments
         $messageData = Messages::getByIdOrFail($messageId);
         $comment = $messageData->comment($message, $user);
         $comment->fireToQueue('comment:created', $comment);
+        return $comment;
     }
 
     /**
