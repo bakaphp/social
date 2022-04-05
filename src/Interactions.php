@@ -173,19 +173,25 @@ class Interactions
         ]);
     }
 
+    /**
+     * getEntityByInteractionType.
+     *
+     * @param  UserInterface $user
+     * @param  string $interactionName
+     *
+     * @return array
+     */
     public static function getEntityByInteractionType(UserInterface $user, string $interactionName) : array
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
-        $usersInteractions = UsersInteractions::count([
+        $usersInteractions = UsersInteractions::find([
             'conditions' => 'users_id = :userId:  
                             AND interactions_id = :interactionId:  
-                            AND entity_namespace = :namespace: 
                             AND is_deleted = 0',
             'bind' => [
                 'userId' => $user->getId(),
-                'interactionId' => $interaction->getId(),
-                'namespace' => $entityNamespace,
+                'interactionId' => $interaction->getId()
             ]
         ]);
 
