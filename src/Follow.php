@@ -7,6 +7,7 @@ namespace Kanvas\Social;
 use Baka\Contracts\Auth\UserInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
+use Kanvas\Social\Models\UserMessages;
 use Kanvas\Social\Models\UsersFollows;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
@@ -75,8 +76,8 @@ class Follow
         $follow->companies_branches_id = $globalFollowing ? 0 : $user->currentBranchId();
         $follow->saveOrFail();
 
-        $follow->increment(Interactions::FOLLOWING, get_class($entity));
-        $user->increment(Interactions::FOLLOWERS, get_class($entity));
+        // $follow->increment(Interactions::FOLLOWING, get_class($entity));
+        // $user->increment(Interactions::FOLLOWERS, get_class($entity));
 
         return $follow->isFollowing();
     }
