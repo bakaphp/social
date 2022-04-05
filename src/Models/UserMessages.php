@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace Kanvas\Social\Models;
 
 use Baka\Contracts\Auth\UserInterface;
+use Canvas\Contracts\CustomFields\CustomFieldsTrait;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Paginator\Adapter\Model;
 
 class UserMessages extends BaseModel
 {
+    use CustomFieldsTrait;
+
     public int $messages_id;
     public int $users_id;
 
@@ -20,6 +23,7 @@ class UserMessages extends BaseModel
     {
         parent::initialize();
         $this->setSource('user_messages');
+        $this->belongsTo('messages_id', Messages::class, 'id', ['alias' => 'message']);
     }
 
     /**
