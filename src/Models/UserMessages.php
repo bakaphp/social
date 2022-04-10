@@ -15,6 +15,7 @@ class UserMessages extends BaseModel
 
     public int $messages_id;
     public int $users_id;
+    public ?string $notes = null;
 
     /**
      * Initialize method for model.
