@@ -53,7 +53,7 @@ class UserMessages
     }
 
     /**
-     * Get all the messages of a user.
+     * Get the count of all user messages.
      *
      * @param UserInterface $user
      *
