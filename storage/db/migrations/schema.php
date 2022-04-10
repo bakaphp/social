@@ -6109,11 +6109,11 @@ return array (
           'IS_GENERATED' => 'NEVER',
           'GENERATION_EXPRESSION' => NULL,
         ),
-        'total_likes' => 
+        'total_liked' => 
         array (
           'TABLE_CATALOG' => 'def',
           'TABLE_NAME' => 'messages',
-          'COLUMN_NAME' => 'total_likes',
+          'COLUMN_NAME' => 'total_liked',
           'ORDINAL_POSITION' => '12',
           'COLUMN_DEFAULT' => '0',
           'IS_NULLABLE' => 'YES',
@@ -6550,24 +6550,6 @@ return array (
             'Index_comment' => '',
           ),
         ),
-        'total_likes' => 
-        array (
-          1 => 
-          array (
-            'Table' => 'messages',
-            'Non_unique' => '1',
-            'Key_name' => 'total_likes',
-            'Seq_in_index' => '1',
-            'Column_name' => 'total_likes',
-            'Collation' => 'A',
-            'Sub_part' => NULL,
-            'Packed' => NULL,
-            'Null' => 'YES',
-            'Index_type' => 'BTREE',
-            'Comment' => '',
-            'Index_comment' => '',
-          ),
-        ),
         'total_saved' => 
         array (
           1 => 
@@ -6631,6 +6613,24 @@ return array (
             'Key_name' => 'parent_unique_id',
             'Seq_in_index' => '1',
             'Column_name' => 'parent_unique_id',
+            'Collation' => 'A',
+            'Sub_part' => NULL,
+            'Packed' => NULL,
+            'Null' => 'YES',
+            'Index_type' => 'BTREE',
+            'Comment' => '',
+            'Index_comment' => '',
+          ),
+        ),
+        'total_likes' => 
+        array (
+          1 => 
+          array (
+            'Table' => 'messages',
+            'Non_unique' => '1',
+            'Key_name' => 'total_likes',
+            'Seq_in_index' => '1',
+            'Column_name' => 'total_liked',
             'Collation' => 'A',
             'Sub_part' => NULL,
             'Packed' => NULL,
