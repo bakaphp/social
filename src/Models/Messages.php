@@ -7,6 +7,7 @@ use Baka\Contracts\Auth\UserInterface;
 use Baka\Contracts\Elasticsearch\ElasticIndexModelTrait;
 use function Baka\isJson;
 use Canvas\Contracts\CustomFields\CustomFieldsTrait;
+use Canvas\Contracts\EventManagerAwareTrait;
 use Canvas\Contracts\FileSystemModelTrait;
 use Canvas\Models\Behaviors\Uuid;
 use Canvas\Models\SystemModules;
@@ -16,7 +17,6 @@ use Kanvas\Social\Contracts\Messages\MessageableEntityInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\ElasticMessages;
 use Phalcon\Di;
-use Canvas\Contracts\EventManagerAwareTrait;
 
 class Messages extends BaseModel implements MessagesInterface, MessageableEntityInterface
 {
@@ -40,6 +40,11 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     public ?string $message = null;
     public ?int $reactions_count = 0;
     public ?int $comments_count = 0;
+
+    /**
+     * dynamic field added by user_messages on find.
+     */
+    public ?string $notes = null;
 
     /**
      * Initialize method for model.
@@ -365,5 +370,19 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     public function isIndexable() : bool
     {
         return !$this->is_deleted;
+    }
+
+    /**
+     * Get user message notes.
+     *
+     * @return array
+     */
+    public function getNotes() : array
+    {
+        if (isJson($this->notes)) {
+            return json_decode($this->notes, true);
+        }
+
+        return [$this->notes];
     }
 }
