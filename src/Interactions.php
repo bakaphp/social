@@ -218,7 +218,7 @@ class Interactions
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
-        return UsersInteractions::findFirstOrFail([
+        return UsersInteractions::find([
             'conditions' => 'entity_namespace = :namespace: 
                             AND users_id = :userId:
                             AND entity_id = :entityId:
