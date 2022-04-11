@@ -34,7 +34,9 @@ class Interactions
             $userInteraction->entity_namespace = get_class($entity);
             $userInteraction->entity_id = $entity->getId();
             $userInteraction->interactions_id = $interaction->getId();
-            $userInteraction->notes = $notes;
+            if ($notes) {
+                $userInteraction->notes = $notes;
+            }
             $userInteraction->saveOrFail();
             $userInteraction->fireToQueue('interaction:created', $userInteraction);
         }
