@@ -16,6 +16,7 @@ class UsersInteractions extends BaseModel
     public int $entity_id;
     public string $entity_namespace;
     public int $interactions_id;
+    public ?string $notes = null;
 
     const LIKE = 'like';
     const SAVE = 'save';
