@@ -19,7 +19,7 @@ class Interactions
      *
      * @return bool
      */
-    public static function add(UserInterface $user, ModelInterface $entity, string $interactionName) : UsersInteractions
+    public static function add(UserInterface $user, ModelInterface $entity, string $interactionName, ?string $notes = null) : UsersInteractions
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
@@ -34,6 +34,7 @@ class Interactions
             $userInteraction->entity_namespace = get_class($entity);
             $userInteraction->entity_id = $entity->getId();
             $userInteraction->interactions_id = $interaction->getId();
+            $userInteraction->notes = $notes;
             $userInteraction->saveOrFail();
             $userInteraction->fireToQueue('interaction:created', $userInteraction);
         }
@@ -200,5 +201,34 @@ class Interactions
             $entities[] = $userInteraction->entityData;
         }
         return $entities;
+    }
+
+    /**
+     * getInteractionByEntity.
+     *
+     * @param  UserInterface $user
+     * @param  ModelInterface $entity
+     * @param  string $interactionName
+     *
+     * @return UsersInteractions
+     */
+    public static function getInteractionByEntity(UserInterface $user, ModelInterface $entity, string $interactionName) : UsersInteractions
+    {
+        $interaction = InteractionsModel::getByName($interactionName);
+
+        return UsersInteractions::findFirstOrFail([
+            'conditions' => 'entity_namespace = :namespace: 
+                            AND users_id = :userId:
+                            AND entity_id = :entityId:
+                            AND interactions_id = :interactionId:
+                            AND is_deleted = 0',
+
+            'bind' => [
+                'namespace' => get_class($entity),
+                'entityId' => $entity->getId(),
+                'interactionId' => $interaction->getId(),
+                'userId' => $user->getId(),
+            ]
+        ]);
     }
 }
