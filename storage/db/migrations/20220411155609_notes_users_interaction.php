@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
 final class NotesUsersInteraction extends AbstractMigration
@@ -19,7 +20,7 @@ final class NotesUsersInteraction extends AbstractMigration
     public function change() : void
     {
         $this->table('users_interactions')
-            ->addColumn('notes', 'text', ['null' => true, 'after' => 'interactions_id'])
+            ->addColumn('notes', 'text', ['null' => true, 'after' => 'interactions_id', 'limit' => MysqlAdapter::TEXT_LONG])
             ->save();
     }
 }
