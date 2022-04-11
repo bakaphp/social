@@ -214,11 +214,11 @@ class Interactions
      *
      * @return UsersInteractions
      */
-    public static function getInteractionByEntity(UserInterface $user, ModelInterface $entity, string $interactionName) : UsersInteractions
+    public static function getInteractionByEntity(UserInterface $user, ModelInterface $entity, string $interactionName) : object
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
-        return UsersInteractions::findFirstOrFail([
+        return UsersInteractions::find([
             'conditions' => 'entity_namespace = :namespace: 
                             AND users_id = :userId:
                             AND entity_id = :entityId:
