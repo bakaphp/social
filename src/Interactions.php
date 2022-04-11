@@ -214,7 +214,7 @@ class Interactions
      *
      * @return UsersInteractions
      */
-    public static function getInteractionByEntity(UserInterface $user, ModelInterface $entity, string $interactionName) : UsersInteractions
+    public static function getInteractionByEntity(UserInterface $user, ModelInterface $entity, string $interactionName) : object
     {
         $interaction = InteractionsModel::getByName($interactionName);
 
