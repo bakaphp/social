@@ -6,6 +6,7 @@ namespace Kanvas\Social\Models;
 use Baka\Contracts\Auth\UserInterface;
 use Canvas\Contracts\EventManagerAwareTrait;
 use Canvas\Models\Users;
+use Kanvas\Social\Interactions;
 use Phalcon\Mvc\ModelInterface;
 
 class UsersFollows extends BaseModel
@@ -78,7 +79,7 @@ class UsersFollows extends BaseModel
                 $this->user->decrees(Interactions::FOLLOWING, $this->entity_namespace);
             }
         }
-
+        $this->fireToQueue('kanvas.social.unfollow', $this);
         return $this->isFollowing();
     }
 
@@ -122,7 +123,7 @@ class UsersFollows extends BaseModel
         if (method_exists(get_parent_class($this), 'afterCreate')) {
             parent::afterCreate();
         }
-        $this->fire('kanvas.social.follow:afterCreate', $this);
+        $this->fireToQueue('kanvas.social.follow:afterCreate', $this);
     }
 
     /**
@@ -135,6 +136,8 @@ class UsersFollows extends BaseModel
         if (method_exists(get_parent_class($this), 'afterSave')) {
             parent::afterSave();
         }
-        $this->fire('kanvas.social.follow:afterSave', $this);
+        $this->fireToQueue('kanvas.social.follow:afterSave', $this);
+        $users = Users::findFirstOrFail($this->users_id);
+        Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), 'follow');
     }
 }

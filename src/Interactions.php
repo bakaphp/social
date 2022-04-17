@@ -27,6 +27,7 @@ class Interactions
 
         if ($userInteraction && !InteractionsModel::isComment($interaction->getId())) {
             self::removeInteraction($userInteraction);
+            $userInteraction->fireToQueue('interaction:removed', $userInteraction);
             return $userInteraction;
         } elseif (!$userInteraction) {
             $userInteraction = new UsersInteractions();

@@ -17,6 +17,7 @@ use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\ElasticMessages;
 use Phalcon\Di;
 use Canvas\Contracts\EventManagerAwareTrait;
+use Kanvas\Social\Interactions;
 
 class Messages extends BaseModel implements MessagesInterface, MessageableEntityInterface
 {
@@ -355,6 +356,7 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
         if ($this->hasParent()) {
             ElasticMessages::dispatch($this->getParentMessage());
         }
+        Interactions::add($this->users, $this, 'save-message');
     }
 
     /**
@@ -365,5 +367,18 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     public function isIndexable() : bool
     {
         return !$this->is_deleted;
+    }
+
+    /**
+     * After create.
+     *
+     * @return void
+     */
+    public function afterCreate()
+    {
+        if (method_exists(get_parent_class($this), 'afterCreate')) {
+            parent::afterCreate();
+        }
+        $this->fireToQueue('kanvas.social.messages:afterCreate', $this);
     }
 }
