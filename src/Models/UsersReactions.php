@@ -59,6 +59,6 @@ class UsersReactions extends BaseModel
     public function afterSave()
     {
         $users = Users::findFirstOrFail($this->users_id);
-        Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), 'reaction');
+        Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), UsersInteractions::REACTION);
     }
 }

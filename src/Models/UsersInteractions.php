@@ -23,7 +23,7 @@ class UsersInteractions extends BaseModel
     const COMMENT = 'comment';
     const REPLIED = 'reply';
     const FOLLOWING = 'follow';
-
+    const REACTION = 'reaction';
     /**
      * Initialize relationship after fetch
      * since we need entity_namespace info.

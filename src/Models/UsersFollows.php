@@ -138,6 +138,6 @@ class UsersFollows extends BaseModel
         }
         $this->fireToQueue('kanvas.social.follow:afterSave', $this);
         $users = Users::findFirstOrFail($this->users_id);
-        Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), 'follow');
+        Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), UsersInteractions::FOLLOWING);
     }
 }
