@@ -11,11 +11,10 @@ class UsersInteractions extends BaseModel
 {
     use EventManagerAwareTrait;
 
-
-    public int $users_id;
-    public int $entity_id;
-    public string $entity_namespace;
-    public int $interactions_id;
+    public int $users_id = 0;
+    public int $entity_id = 0;
+    public string $entity_namespace = '';
+    public int $interactions_id = 0;
     public ?string $notes = null;
 
     const LIKE = 'like';
