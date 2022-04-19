@@ -15,6 +15,7 @@ use Kanvas\Social\Models\Channels;
 use Kanvas\Social\Models\Messages as MessagesModel;
 use Kanvas\Social\Models\MessageTypes as MessageTypesModel;
 use Kanvas\Social\Models\UserMessages;
+use Kanvas\Social\UserMessages as SocialUserMessages;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 
@@ -25,7 +26,7 @@ class Messages
      *
      * @param string $id
      *
-     * @return MessagesModel
+     * @return MessagesInterface
      */
     public static function getMessage(string $id) : MessagesInterface
     {
@@ -37,7 +38,7 @@ class Messages
      *
      * @param string $uuid
      *
-     * @return MessagesModel
+     * @return MessagesInterface
      */
     public static function getMessageByUuid(string $uuid) : MessagesInterface
     {
@@ -54,12 +55,13 @@ class Messages
      * @param int $limit
      * @param int $page
      *
+     * @deprecated  v2
+     *
      * @return Simple
      */
     public static function getByUser(UserInterface $user, int $page = 1, int $limit = 25) : Simple
     {
-        $feed = new UserMessages();
-        return $feed->getUserFeeds($user, $limit, $page);
+        return SocialUserMessages::getAll($user, $page, $limit);
     }
 
     /**
@@ -72,8 +74,14 @@ class Messages
      *
      * @return Simple
      */
-    public static function getByChannel(Channels $channel, int $page = 1, int $limit = 25, string $orderBy = 'id', string $sort = 'DESC', ?string $messageTypeId = null) : Simple
-    {
+    public static function getByChannel(
+        Channels $channel,
+        int $page = 1,
+        int $limit = 25,
+        string $orderBy = 'id',
+        string $sort = 'DESC',
+        ?string $messageTypeId = null
+    ) : Simple {
         $feed = new ChannelMessages();
         return $feed->getMessagesByChannel($channel, $page, $limit, $orderBy, $sort, $messageTypeId);
     }
@@ -89,8 +97,13 @@ class Messages
      *
      * @return UserMessages
      */
-    public static function create(UserInterface $user, string $verb, array $message = [], ?MessageableEntityInterface $object = null, bool $sendToUserFeeds = true) : MessagesInterface
-    {
+    public static function create(
+        UserInterface $user,
+        string $verb,
+        array $message = [],
+        ?MessageableEntityInterface $object = null,
+        bool $sendToUserFeeds = true
+    ) : MessagesInterface {
         $newMessage = new MessagesModel();
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
         $newMessage->companies_id = $user->getDefaultCompany()->getId();
@@ -125,8 +138,13 @@ class Messages
      *
      * @return UserMessages
      */
-    public static function createByObject(UserInterface $user, string $verb, MessagesInterface $newMessage, MessageableEntityInterface $object, bool $sendToUserFeeds = true) : MessagesInterface
-    {
+    public static function createByObject(
+        UserInterface $user,
+        string $verb,
+        MessagesInterface $newMessage,
+        MessageableEntityInterface $object,
+        bool $sendToUserFeeds = true
+    ) : MessagesInterface {
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
         $newMessage->companies_id = $user->getDefaultCompany()->getId();
         $newMessage->users_id = (int) $user->getId();

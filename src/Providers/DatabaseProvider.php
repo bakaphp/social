@@ -27,7 +27,10 @@ class DatabaseProvider implements ServiceProviderInterface
                     'password' => getenv('DATA_API_SOCIAL_MYSQL_PASS'),
                     'dbname' => getenv('DATA_API_SOCIAL_MYSQL_NAME'),
                     'charset' => 'utf8',
-                    'options' => [PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING]
+                    'options' => [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
+                        PDO::ATTR_EMULATE_PREPARES => false,
+                    ]
                 ];
 
                 try {

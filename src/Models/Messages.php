@@ -41,6 +41,14 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     public ?string $message = null;
     public ?int $reactions_count = 0;
     public ?int $comments_count = 0;
+    public ?int $total_liked = 0;
+    public ?int $total_saved = 0;
+    public ?int $total_shared = 0;
+
+    /**
+     * dynamic field added by user_messages on find.
+     */
+    public ?string $notes = null;
 
     /**
      * Initialize method for model.
@@ -380,5 +388,19 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
             parent::afterCreate();
         }
         $this->fireToQueue('kanvas.social.messages:afterCreate', $this);
+    }
+
+    /**
+     * Get user message notes.
+     *
+     * @return array
+     */
+    public function getNotes() : array
+    {
+        if (isJson($this->notes)) {
+            return json_decode($this->notes, true);
+        }
+
+        return [$this->notes];
     }
 }

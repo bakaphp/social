@@ -15,6 +15,13 @@ class UserMessages extends BaseModel
 
     public int $messages_id;
     public int $users_id;
+    public ?string $notes = null;
+    public int $is_liked = 0;
+    public int $is_saved = 0;
+    public int $is_shared = 0;
+    public int $is_reported = 0;
+    public ?string $reactions = null;
+    public ?string $saved_lists = null;
 
     /**
      * Initialize method for model.

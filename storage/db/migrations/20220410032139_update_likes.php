@@ -2,11 +2,11 @@
 
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class AddCompaniesColumnUsersFollowsMigration extends Phinx\Migration\AbstractMigration
+class UpdateLikes extends Phinx\Migration\AbstractMigration
 {
     public function change()
     {
-        $this->table('users_follows', [
+        $this->table('messages', [
             'id' => false,
             'primary_key' => ['id'],
             'engine' => 'InnoDB',
@@ -15,15 +15,17 @@ class AddCompaniesColumnUsersFollowsMigration extends Phinx\Migration\AbstractMi
             'comment' => '',
             'row_format' => 'DYNAMIC',
         ])
-            ->addColumn('companies_id', 'integer', [
+            ->addColumn('total_liked', 'integer', [
                 'null' => true,
+                'default' => '0',
                 'limit' => MysqlAdapter::INT_REGULAR,
-                'after' => 'entity_id',
+                'after' => 'comments_count',
             ])
-            ->addColumn('companies_branches_id', 'integer', [
-                'null' => true,
-                'limit' => MysqlAdapter::INT_REGULAR,
-                'after' => 'companies_id',
+            ->removeColumn('total_likes')
+            ->removeIndexByName('total_likes')
+            ->addIndex(['total_liked'], [
+                'name' => 'total_likes',
+                'unique' => false,
             ])
             ->save();
     }
