@@ -27,7 +27,6 @@ class Interactions
 
         if ($userInteraction && !InteractionsModel::isComment($interaction->getId())) {
             self::removeInteraction($userInteraction);
-            $userInteraction->fireToQueue('interaction:removed', $userInteraction);
             return $userInteraction;
         } elseif (!$userInteraction) {
             $userInteraction = new UsersInteractions();
@@ -39,7 +38,6 @@ class Interactions
                 $userInteraction->notes = $notes;
             }
             $userInteraction->saveOrFail();
-            $userInteraction->fireToQueue('interaction:created', $userInteraction);
         }
 
         //if is_deleted = 0 means it was added

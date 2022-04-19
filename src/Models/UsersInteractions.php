@@ -5,12 +5,13 @@ namespace Kanvas\Social\Models;
 
 use Baka\Contracts\Auth\UserInterface;
 use Canvas\Contracts\EventManagerAwareTrait;
+use Kanvas\Social\Traits\EntityData;
 use Phalcon\Mvc\ModelInterface;
 
 class UsersInteractions extends BaseModel
 {
     use EventManagerAwareTrait;
-
+    use EntityData;
 
     public int $users_id;
     public int $entity_id;

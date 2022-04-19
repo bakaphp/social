@@ -7,6 +7,7 @@ use Baka\Contracts\Auth\UserInterface;
 use Baka\Contracts\Elasticsearch\ElasticIndexModelTrait;
 use function Baka\isJson;
 use Canvas\Contracts\CustomFields\CustomFieldsTrait;
+use Canvas\Contracts\EventManagerAwareTrait;
 use Canvas\Contracts\FileSystemModelTrait;
 use Canvas\Models\Behaviors\Uuid;
 use Canvas\Models\SystemModules;
@@ -14,10 +15,9 @@ use Canvas\Models\Users;
 use Kanvas\Social\Contracts\Interactions\EntityInteractionsTrait;
 use Kanvas\Social\Contracts\Messages\MessageableEntityInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
+use Kanvas\Social\Interactions;
 use Kanvas\Social\Jobs\ElasticMessages;
 use Phalcon\Di;
-use Canvas\Contracts\EventManagerAwareTrait;
-use Kanvas\Social\Interactions;
 
 class Messages extends BaseModel implements MessagesInterface, MessageableEntityInterface
 {
@@ -356,7 +356,7 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
         if ($this->hasParent()) {
             ElasticMessages::dispatch($this->getParentMessage());
         }
-        Interactions::add($this->users, $this, 'save-message');
+        Interactions::add($this->users, $this, UsersInteractions::SAVE);
     }
 
     /**
