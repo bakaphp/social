@@ -13,7 +13,7 @@ trait EntityData
      *
      * @return ModelInterface
      */
-    public function retrieveEntityData() : ModelInterface
+    public function retrieveEntityData() : ?ModelInterface
     {
         return $this->entity_namespace::findFirst($this->entity_id);
     }
