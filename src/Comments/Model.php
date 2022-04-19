@@ -8,7 +8,9 @@ use Canvas\Contracts\FileSystemModelTrait;
 use Canvas\Models\Users;
 use Kanvas\Social\Contracts\Comments\Comments;
 use Kanvas\Social\Contracts\Interactions\EntityInteractionsTrait;
+use Kanvas\Social\Interactions;
 use Kanvas\Social\Models\BaseModel;
+use Kanvas\Social\Models\UsersInteractions;
 
 class Model extends BaseModel implements Comments
 {
@@ -156,5 +158,7 @@ class Model extends BaseModel implements Comments
     public function afterSave()
     {
         $this->associateFileSystem();
+        $users = Users::findFirstOrFail($this->users_id);
+        Interactions::add($users, $this, UsersInteractions::COMMENT);
     }
 }

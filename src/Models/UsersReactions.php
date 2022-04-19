@@ -3,8 +3,14 @@ declare(strict_types=1);
 
 namespace Kanvas\Social\Models;
 
+use Canvas\Models\Users;
+use Kanvas\Social\Interactions;
+use Kanvas\Social\Traits\EntityData;
+
 class UsersReactions extends BaseModel
 {
+    use EntityData;
+
     public $id;
     public int $users_id;
     public int $entity_id;
@@ -27,6 +33,14 @@ class UsersReactions extends BaseModel
                 'alias' => 'entityData'
             ]
         );
+        $this->belongsTo(
+            'users_id',
+            Users::class,
+            'id',
+            [
+                'alias' => 'users',
+            ]
+        );
     }
 
     /**
@@ -37,5 +51,17 @@ class UsersReactions extends BaseModel
         parent::initialize();
 
         $this->setSource('users_reactions');
+    }
+
+
+    /**
+     * afterSave.
+     *
+     * @return void
+     */
+    public function afterSave()
+    {
+        $users = Users::findFirstOrFail($this->users_id);
+        Interactions::add($users, $this->retrieveEntityData(), UsersInteractions::REACTION);
     }
 }

@@ -38,7 +38,6 @@ class Interactions
                 $userInteraction->notes = $notes;
             }
             $userInteraction->saveOrFail();
-            $userInteraction->fireToQueue('interaction:created', $userInteraction);
         }
 
         //if is_deleted = 0 means it was added
