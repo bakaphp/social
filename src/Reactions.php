@@ -117,9 +117,9 @@ class Reactions
      */
     public static function createReaction(string $reactionName, ?UserInterface $user = null, string $reactionEmoji = null) : ReactionsModel
     {
-        if ($reactionEmoji && !StringFormatter::isStringEmoji($reactionEmoji)) {
-            throw new Exception('Emoji must have a valid unicode format');
-        }
+        // if ($reactionEmoji && !StringFormatter::isStringEmoji($reactionEmoji)) {
+        //     throw new Exception('Emoji must have a valid unicode format');
+        // }
 
         $reaction = new ReactionsModel();
         $reaction->name = $reactionName;
