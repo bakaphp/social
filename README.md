@@ -33,6 +33,15 @@ In case you want you want to erase the messages index, in your terminal, execute
  php cli/cli.php social eraseMessages
 ```
 
+Elastic Configuration
+---------------------
+
+Update total fields limit for message index
+```
+curl -s -XPUT https://{elastichost}/messages/_settings  -H 'Content-Type: application/json' -d '{"index.mapping.total_fields.limit": 100}'
+```
+
+
 Running Tests:
 --------
 ```bash 
