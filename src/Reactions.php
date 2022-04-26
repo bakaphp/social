@@ -28,9 +28,9 @@ class Reactions
      */
     public static function addMessageReaction(string $reaction, UserInterface $user, ModelInterface $entity) : UsersReactions
     {
-        if (StringFormatter::isStringEmoji($reaction)) {
+        try {
             $reactionData = self::getReactionByEmoji($reaction, $user);
-        } else {
+        } catch (Exception $e)
             $reactionData = self::getReactionByName($reaction, $user);
         }
 
