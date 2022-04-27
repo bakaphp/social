@@ -24,13 +24,13 @@ class Reactions
      * @param UserInterface $user
      * @param ModelInterface $entity
      *
-     * @return bool
+     * @return UsersReactions
      */
     public static function addMessageReaction(string $reaction, UserInterface $user, ModelInterface $entity) : UsersReactions
     {
         try {
             $reactionData = self::getReactionByEmoji($reaction, $user);
-        } catch (Exception $e)
+        } catch (Exception $e) {
             $reactionData = self::getReactionByName($reaction, $user);
         }
 
