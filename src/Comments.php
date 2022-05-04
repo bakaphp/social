@@ -87,11 +87,11 @@ class Comments
      *
      * @return MessageComments
      */
-    public static function reply(string $commentId, string $message) : MessageComments
+    public static function reply(string $commentId, string $message, UserInterface $user) : MessageComments
     {
         $comment = MessageComments::getByIdOrFail($commentId);
 
-        return $comment->reply($message);
+        return $comment->reply($message, $user);
     }
 
     /**
