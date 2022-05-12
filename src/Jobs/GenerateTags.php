@@ -23,7 +23,7 @@ class GenerateTags extends Job implements QueueableJobInterface
     /**
      * Construct.
      *
-     * @param UsersInteractions $user
+     * @param UserInterface $user
      * @param Messages $message
      */
     public function __construct(UserInterface $user, Messages $message)
