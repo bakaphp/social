@@ -137,7 +137,7 @@ class Model extends BaseModel implements Comments
      */
     public function reply(string $message, UserInterface $user) : self
     {
-        $comment = new self();
+        $comment = new static();
         $comment->message_id = $this->message_id;
         $comment->apps_id = $this->apps_id;
         $comment->companies_id = $this->companies_id;
