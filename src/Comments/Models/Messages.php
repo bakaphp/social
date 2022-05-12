@@ -33,6 +33,19 @@ class Messages extends Model
                 ]
             ]
         );
+
+        $this->hasMany(
+            'id',
+            self::class,
+            'parent_id',
+            [
+                'reusable' => true,
+                'alias' => 'replies',
+                'params' => [
+                    'conditions' => 'is_deleted = 0',
+                ]
+            ]
+        );
     }
 
     /**

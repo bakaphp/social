@@ -18,6 +18,19 @@ class Entity extends Model
         parent::initialize();
 
         $this->setSource('entity_comments');
+
+        $this->hasMany(
+            'id',
+            self::class,
+            'parent_id',
+            [
+                'reusable' => true,
+                'alias' => 'replies',
+                'params' => [
+                    'conditions' => 'is_deleted = 0',
+                ]
+            ]
+        );
     }
 
     /**
