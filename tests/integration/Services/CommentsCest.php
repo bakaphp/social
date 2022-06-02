@@ -107,7 +107,11 @@ class CommentsCest
      */
     public function replyComment(IntegrationTester $I) : void
     {
-        $reply = Comments::reply($this->comment->getId(), 'reply-test');
+        $reply = Comments::reply(
+            $this->comment->getId(),
+            'reply-test',
+            Users::findFirst(2)
+        );
 
         $I->assertEquals($reply->message, 'reply-test');
         $I->assertEquals($reply->parent_id, $this->comment->getId());
@@ -118,6 +122,7 @@ class CommentsCest
      *
      * @param IntegrationTester $I
      * @before getCommentData
+     * @after getCommentsFromMessage
      *
      * @return void
      */
