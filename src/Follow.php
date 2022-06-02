@@ -200,4 +200,29 @@ class Follow
             $feed->set('notes', $notes);
         }
     }
+
+    /**
+     * getFeed.
+     *
+     * @param  UserInterface $user
+     * @param  int $limit
+     * @param  int $page
+     *
+     * @return Simple
+     */
+    public static function getFeed(UserInterface $user, int $limit = 10, int $page = 1) : Simple
+    {
+        $offset = ($page - 1) * $limit;
+        return Messages::findByRawSql(
+            'SELECT messages.* FROM messages 
+            INNER JOIN user_messages ON user_messages.messages_id = messages.id 
+            WHERE user_messages.users_id = ? AND user_messages.is_deleted = 0 AND messages.is_deleted = 0
+            ORDER BY messages.created_at DESC LIMIT ?,?',
+            [
+                $user->getId(),
+                $offset,
+                $limit
+            ]
+        );
+    }
 }
