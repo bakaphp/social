@@ -45,9 +45,7 @@ class Distributions
     {
         $messageFormatted = self::formatDistributionNewMessage($message, $followableEntity);
 
-        Queue::setDurable(false);
-
-        Queue::send('feedsDistribution', json_encode($messageFormatted));
+        $message->fireToQueue('kanvas.social.distribution:feedsDistribution', (object)$messageFormatted);
     }
 
     /**
