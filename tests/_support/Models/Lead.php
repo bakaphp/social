@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kanvas\Packages\Test\Support\Models;
+namespace Kanvas\Social\Test\Support\Models;
 
 use Kanvas\Packages\Social\Contracts\Channels\ChannelsInterface;
 use Kanvas\Packages\Social\Contracts\Channels\ChannelsTrait;
