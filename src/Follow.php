@@ -224,6 +224,5 @@ class Follow
                 $limit
             ]
         );
-        return $feed;
     }
 }
