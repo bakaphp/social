@@ -21,19 +21,11 @@ class FollowsCest
     public function follow(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-
-        for ($i = 1; $i < 10; $i++) {
-            $userFollow = Users::findFirst(2);
-            $userFollow->id = $i + 1;
-
-            if (!$user->isFollowing($userFollow)) {
-                $I->assertTrue($user->follow($userFollow));
-            }
-        }
+        $userFollow = Users::findFirst(-1);
 
         for ($i = 1; $i < 10; $i++) {
             $tag1 = new Tag();
-            $tag1->id = $i;
+            $tag1->save();
 
             if (!$user->isFollowing($tag1)) {
                 $I->assertTrue($user->follow($tag1));
@@ -60,7 +52,7 @@ class FollowsCest
         $tag1 = new Tag();
         $tag1->id = 1;
         $follows = Follow::getFollowsByUser($user, $tag1)->toArray();
-        $I->assertCount(1, $follows);
+        $I->assertGreaterThan(0, $follows);
         $I->assertNotNull($follows[0]['id']);
 
         $I->assertEquals($follows[0]['entity_namespace'], get_class(new Tag()));
@@ -71,7 +63,7 @@ class FollowsCest
         $user = Users::findFirst(1);
 
         for ($i = 1; $i < 5; $i++) {
-            $userFollow = Users::findFirst(2);
+            $userFollow = Users::findFirst(-1);
             $userFollow->id = $i + 1;
 
             if ($user->isFollowing($userFollow)) {

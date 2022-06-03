@@ -2,6 +2,7 @@
 
 namespace Kanvas\Social\Tests\Integration\Social\Service;
 
+use Baka\Support\Random;
 use Canvas\Models\FileSystem;
 use IntegrationTester;
 use Kanvas\Social\Distributions;
@@ -207,13 +208,14 @@ class MessagesCest
      */
     public function messageReaction(IntegrationTester $I) : void
     {
-        $I->assertFalse(Reactions::addMessageReaction('confuse', Users::findFirst(1), $this->message));
+        $reactionName = Random::generateDisplayName('confused', 2000);
+        Reactions::createReaction($reactionName, Users::findFirst(1), '☺');
 
-        $I->assertFalse(Reactions::addMessageReaction('☺', Users::findFirst(1), $this->message));
+        $I->assertFalse((bool)Reactions::addMessageReaction($reactionName, Users::findFirst(1), $this->message)->is_deleted);
+        $I->assertTrue((bool)Reactions::addMessageReaction($reactionName, Users::findFirst(1), $this->message)->is_deleted);
 
-        $I->assertTrue(Reactions::addMessageReaction('confuse', Users::findFirst(1), $this->message));
-
-        $I->assertTrue(Reactions::addMessageReaction('☺', Users::findFirst(1), $this->message));
+        $I->assertFalse((bool)Reactions::addMessageReaction('☺', Users::findFirst(1), $this->message)->is_deleted);
+        $I->assertTrue((bool)Reactions::addMessageReaction('☺', Users::findFirst(1), $this->message)->is_deleted);
     }
 
     /**
@@ -227,7 +229,7 @@ class MessagesCest
     public function messageInteraction(IntegrationTester $I) : void
     {
         $I->assertFalse(
-            Interactions::add(Users::findFirst(1), $this->message, EnumsInteractions::REACT)
+            (bool)Interactions::add(Users::findFirst(1), $this->message, EnumsInteractions::REACT)->is_deleted
         );
     }
 

@@ -2,6 +2,7 @@
 
 namespace Kanvas\Social\Tests\Integration\Social\Service;
 
+use Baka\Support\Random;
 use Canvas\Models\SystemModules;
 use IntegrationTester;
 use Kanvas\Social\Comments;
@@ -11,6 +12,8 @@ use Kanvas\Social\Messages as MessagesService;
 use Kanvas\Social\MessageTypes;
 use Kanvas\Social\Models\MessageComments;
 use Kanvas\Social\Models\Messages;
+use Kanvas\Social\Models\UsersInteractions;
+use Kanvas\Social\Models\UsersReactions;
 use Kanvas\Social\Reactions;
 use Kanvas\Social\Test\Support\Models\Users;
 
@@ -25,13 +28,14 @@ class CommentsCest
      */
     protected function getCommentData() : void
     {
-        $this->comment = MessageComments::findFirst('is_deleted = 0');
+        $this->comment = MessageComments::findFirst(['is_deleted = 0', 'order' => 'id ASC']);
     }
 
     /**
      * Test add comment.
      *
      * @param UnitTester $I
+     * @before getCommentData
      *
      * @return void
      */
@@ -63,7 +67,7 @@ class CommentsCest
         //Create a new Message for the comment
         $feed = MessagesService::create($user, 'comments', $text);
         $comment = Comments::add($feed->getId(), 'test-text', $user);
-
+        $this->comment = $comment;
         $I->assertEquals('test-text', $comment->message);
     }
 
@@ -101,19 +105,22 @@ class CommentsCest
      * Test reply comment.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * @after getCommentData
      *
      * @return void
      */
     public function replyComment(IntegrationTester $I) : void
     {
+        $commentReply = Random::generateDisplayName('reply-test', 100000);
+        codecept_debug($this->comment->id);
         $reply = Comments::reply(
             $this->comment->getId(),
-            'reply-test',
-            Users::findFirst(2)
+            $commentReply,
+            Users::findFirst(-1)
         );
+        codecept_debug($reply->parent_id);
 
-        $I->assertEquals($reply->message, 'reply-test');
+        $I->assertEquals($reply->message, $commentReply);
         $I->assertEquals($reply->parent_id, $this->comment->getId());
     }
 
@@ -121,7 +128,7 @@ class CommentsCest
      * Test edit comment.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * @after getCommentData
      * @after getCommentsFromMessage
      *
      * @return void
@@ -147,11 +154,15 @@ class CommentsCest
     public function commentReaction(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $I->assertFalse(Reactions::addMessageReaction('confuse', $user, $this->comment));
-        $I->assertFalse(Reactions::addMessageReaction('☺', $user, $this->comment));
+        $reactionName = Random::generateDisplayName('confused', 2000);
+        Reactions::createReaction($reactionName, $user, '☺');
+        $reaction = Reactions::addMessageReaction($reactionName, $user, $this->comment);
+        $I->assertTrue($reaction instanceof UsersReactions);
+        $I->assertFalse((bool)$reaction->is_deleted);
 
-        $I->assertTrue(Reactions::addMessageReaction('confuse', $user, $this->comment));
-        $I->assertTrue(Reactions::addMessageReaction('☺', $user, $this->comment));
+        $reaction = Reactions::addMessageReaction($reactionName, $user, $this->comment);
+        $I->assertTrue($reaction instanceof UsersReactions);
+        $I->assertTrue((bool)$reaction->is_deleted);
     }
 
     /**
@@ -164,10 +175,10 @@ class CommentsCest
      */
     public function messageInteraction(IntegrationTester $I) : void
     {
-        $user = Users::findFirst(1);
+        $user = Users::findFirst(-1);
 
-        $I->assertFalse(
-            Interactions::add($user, $this->comment, EnumsInteractions::REACT)
+        $I->assertTrue(
+            Interactions::add($user, $this->comment, EnumsInteractions::REACT) instanceof UsersInteractions
         );
     }
 

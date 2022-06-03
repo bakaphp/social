@@ -143,7 +143,7 @@ class Model extends BaseModel implements Comments
         $comment->companies_id = $this->companies_id;
         $comment->users_id = $user->getId();
         $comment->message = $message;
-        $comment->parent_id = $this->getParentId();
+        $comment->parent_id = $this->id;
         $comment->saveOrFail();
 
         return $comment;

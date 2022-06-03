@@ -31,7 +31,7 @@ class TagsCest
     public function createTag(IntegrationTester $I) : void
     {
         $tag = Tags::create(Users::findFirst(1), 'Test Tag');
-
+        $this->tag = $tag;
         $I->assertEquals('Test Tag', $tag->name);
     }
 
@@ -39,7 +39,7 @@ class TagsCest
      * Test get Tag from Tag Service.
      *
      * @param IntegrationTester $I
-     * @before createTagTest
+     * @after createTagTest
      *
      * @return void
      */
@@ -54,7 +54,7 @@ class TagsCest
      * Test update from Tags Service.
      *
      * @param IntegrationTester $I
-     * @before createTagTest
+     * @after createTagTest
      *
      * @return void
      */
@@ -69,7 +69,7 @@ class TagsCest
      * Test delete of tag.
      *
      * @param IntegrationTester $I
-     * @before createTagTest
+     * @after createTagTest
      *
      * @return void
      */
