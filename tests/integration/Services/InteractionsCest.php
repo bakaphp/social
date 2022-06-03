@@ -7,17 +7,14 @@ use Kanvas\Social\Enums\Interactions as EnumsInteractions;
 use Kanvas\Social\Interactions;
 use Kanvas\Social\Models\Interactions as ModelsInteractions;
 use Kanvas\Social\Models\Tags;
+use Kanvas\Social\Tags as SocialTags;
 use Kanvas\Social\Test\Support\Models\Users;
 
 class InteractionsCest
 {
     public function before(IntegrationTester $I)
     {
-        $tag = Tags::findFirst([
-            'order' => 'id DESC'
-        ]);
-        $tag->id = null;
-        $tag->saveOrFail();
+        $tag = SocialTags::create(Users::findFirst(1), 'Tag for test');
     }
 
     public function likeEntity(IntegrationTester $I) : void

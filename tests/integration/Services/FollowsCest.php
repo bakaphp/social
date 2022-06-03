@@ -4,6 +4,7 @@ namespace Kanvas\Social\Tests\Integration\Social\Service;
 
 use IntegrationTester;
 use Kanvas\Social\Follow;
+use Kanvas\Social\Tags;
 use Kanvas\Social\Test\Support\Models\Tag;
 use Kanvas\Social\Test\Support\Models\Users;
 
@@ -24,9 +25,7 @@ class FollowsCest
         $userFollow = Users::findFirst(-1);
 
         for ($i = 1; $i < 10; $i++) {
-            $tag1 = new Tag();
-            $tag1->save();
-
+            $tag1 = Tags::create(Users::findFirst(1), 'Tag for test');
             if (!$user->isFollowing($tag1)) {
                 $I->assertTrue($user->follow($tag1));
             }
@@ -49,13 +48,12 @@ class FollowsCest
         $user = Users::findFirst(1);
         $user->id = 1;
 
-        $tag1 = new Tag();
-        $tag1->id = 1;
+        $tag1 = Tags::create(Users::findFirst(1), 'Tag for test');
         $follows = Follow::getFollowsByUser($user, $tag1)->toArray();
         $I->assertGreaterThan(0, $follows);
         $I->assertNotNull($follows[0]['id']);
 
-        $I->assertEquals($follows[0]['entity_namespace'], get_class(new Tag()));
+        $I->assertEquals($follows[0]['entity_namespace'], get_class($tag1));
     }
 
     public function unfollow(IntegrationTester $I) : void
