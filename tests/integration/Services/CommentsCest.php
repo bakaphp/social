@@ -21,21 +21,11 @@ class CommentsCest
 {
     public MessageComments $comment;
 
-    /**
-     * Get the first comment.
-     *
-     * @return void
-     */
-    protected function getCommentData() : void
-    {
-        $this->comment = MessageComments::findFirst(['is_deleted = 0', 'order' => 'id ASC']);
-    }
 
     /**
      * Test add comment.
      *
      * @param UnitTester $I
-     * @before getCommentData
      *
      * @return void
      */
@@ -75,7 +65,7 @@ class CommentsCest
      * Test comment edit.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * after addComment
      *
      * @return void
      */
@@ -90,7 +80,7 @@ class CommentsCest
      * Test get Comment.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * after addComment
      *
      * @return void
      */
@@ -105,7 +95,7 @@ class CommentsCest
      * Test reply comment.
      *
      * @param IntegrationTester $I
-     * @after getCommentData
+     * after addComment
      *
      * @return void
      */
@@ -128,7 +118,6 @@ class CommentsCest
      * Test edit comment.
      *
      * @param IntegrationTester $I
-     * @after getCommentData
      * @after getCommentsFromMessage
      *
      * @return void
@@ -147,7 +136,7 @@ class CommentsCest
      * Test comments Reactions.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * after addComment
      *
      * @return void
      */
@@ -169,7 +158,7 @@ class CommentsCest
      * Test Users Comments Interaction.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * after addComment
      *
      * @return void
      */
@@ -186,7 +175,7 @@ class CommentsCest
      * Test method to get comments from a message.
      *
      * @param IntegrationTester $I
-     * @before getCommentData
+     * after addComment
      *
      * @return void
      */
