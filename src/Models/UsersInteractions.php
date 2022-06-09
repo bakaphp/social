@@ -45,6 +45,14 @@ class UsersInteractions extends BaseModel
                 ]
             ]
         );
+        $this->belongsTo(
+            'interactions_id',
+            Interactions::class,
+            'id',
+            [
+                'alias' => 'interactions'
+            ]
+        );
     }
 
     /**
@@ -92,7 +100,7 @@ class UsersInteractions extends BaseModel
         if (method_exists(get_parent_class($this), 'afterCreate')) {
             parent::afterCreate();
         }
-        $this->fire('kanvas.social.interactions:afterCreate', $this);
+        $this->fireToQueue('kanvas.social.interactions:afterCreate', $this);
     }
 
     /**
@@ -105,6 +113,6 @@ class UsersInteractions extends BaseModel
         if (method_exists(get_parent_class($this), 'afterSave')) {
             parent::afterSave();
         }
-        $this->fire('kanvas.social.interactions:afterSave', $this);
+        $this->fireToQueue('kanvas.social.interactions:afterSave', $this);
     }
 }

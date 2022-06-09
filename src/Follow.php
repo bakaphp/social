@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
+use Kanvas\Social\Contracts\Follows\FollowableInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
 use Kanvas\Social\Models\UserMessages;
@@ -198,6 +199,23 @@ class Follow
         } else {
             $notes = array_merge($feed->get('notes'), $notes);
             $feed->set('notes', $notes);
+        }
+    }
+
+    /**
+     * feedToFollowers.
+     *
+     * @param  FollowableInterface $entity
+     * @param  MessagesInterface $message
+     * @param  array $notes
+     *
+     * @return void
+     */
+    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes) : void
+    {
+        $followers = self::getFollowers($entity);
+        foreach ($followers as $follower) {
+            self::addToFeed($follower->user, $message, $notes);
         }
     }
 
