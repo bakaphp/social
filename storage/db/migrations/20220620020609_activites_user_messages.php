@@ -19,7 +19,7 @@ final class ActivitesUserMessages extends AbstractMigration
     public function change() : void
     {
         $this->table('user_messages')
-            ->addColumn('activities', 'text', array('null' => true, 'after' => 'saved_lists'))
+            ->addColumn('activities', 'text', ['null' => true, 'after' => 'saved_lists'])
             ->save();
     }
 }

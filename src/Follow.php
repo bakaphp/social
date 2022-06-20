@@ -108,14 +108,14 @@ class Follow
      */
     public static function isFollowing(UserInterface $user, ModelInterface $entity) : bool
     {
-        return (bool) UsersFollows::count(array(
+        return (bool) UsersFollows::count([
             'conditions' => 'users_id = :userId: AND entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => array(
+            'bind' => [
                 'userId' => $user->getId(),
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
@@ -128,13 +128,13 @@ class Follow
      */
     public static function getTotalFollowing(UserInterface $user, string $entityNamespace) : int
     {
-        return  UsersFollows::count(array(
+        return  UsersFollows::count([
             'conditions' => 'users_id = :userId:  AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => array(
+            'bind' => [
                 'userId' => $user->getId(),
                 'entityName' => $entityNamespace
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
@@ -146,13 +146,13 @@ class Follow
      */
     public static function getTotalFollowers(ModelInterface $entity) : int
     {
-        return UsersFollows::count(array(
+        return UsersFollows::count([
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => array(
+            'bind' => [
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
@@ -164,13 +164,13 @@ class Follow
      */
     public static function getFollowers(ModelInterface $entity) : Simple
     {
-        return UsersFollows::find(array(
+        return UsersFollows::find([
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => array(
+            'bind' => [
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            )
-        ));
+            ]
+        ]);
     }
     /**
      * addToFeed.
@@ -183,13 +183,13 @@ class Follow
      */
     public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes, ?array $activities = null) : void
     {
-        $feed = UserMessages::findFirst(array(
+        $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
-            'bind' => array(
+            'bind' => [
                 'userId' => $user->getId(),
                 'messageId' => $message->getId()
-            )
-        ));
+            ]
+        ]);
 
         if (!$feed) {
             $feed = new UserMessages();
