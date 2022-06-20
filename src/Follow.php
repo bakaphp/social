@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
+use function Baka\isJson;
 use Kanvas\Social\Contracts\Follows\FollowableInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
@@ -107,14 +108,14 @@ class Follow
      */
     public static function isFollowing(UserInterface $user, ModelInterface $entity) : bool
     {
-        return (bool) UsersFollows::count([
+        return (bool) UsersFollows::count(array(
             'conditions' => 'users_id = :userId: AND entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => [
+            'bind' => array(
                 'userId' => $user->getId(),
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            ]
-        ]);
+            )
+        ));
     }
 
     /**
@@ -127,13 +128,13 @@ class Follow
      */
     public static function getTotalFollowing(UserInterface $user, string $entityNamespace) : int
     {
-        return  UsersFollows::count([
+        return  UsersFollows::count(array(
             'conditions' => 'users_id = :userId:  AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => [
+            'bind' => array(
                 'userId' => $user->getId(),
                 'entityName' => $entityNamespace
-            ]
-        ]);
+            )
+        ));
     }
 
     /**
@@ -145,13 +146,13 @@ class Follow
      */
     public static function getTotalFollowers(ModelInterface $entity) : int
     {
-        return UsersFollows::count([
+        return UsersFollows::count(array(
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => [
+            'bind' => array(
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            ]
-        ]);
+            )
+        ));
     }
 
     /**
@@ -163,13 +164,13 @@ class Follow
      */
     public static function getFollowers(ModelInterface $entity) : Simple
     {
-        return UsersFollows::find([
+        return UsersFollows::find(array(
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
-            'bind' => [
+            'bind' => array(
                 'entityId' => $entity->getId(),
                 'entityName' => get_class($entity)
-            ]
-        ]);
+            )
+        ));
     }
     /**
      * addToFeed.
@@ -180,15 +181,15 @@ class Follow
      *
      * @return void
      */
-    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes) : void
+    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes, ?array $activities = null) : void
     {
-        $feed = UserMessages::findFirst([
+        $feed = UserMessages::findFirst(array(
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
-            'bind' => [
+            'bind' => array(
                 'userId' => $user->getId(),
                 'messageId' => $message->getId()
-            ]
-        ]);
+            )
+        ));
 
         if (!$feed) {
             $feed = new UserMessages();
@@ -199,6 +200,33 @@ class Follow
         } else {
             $notes = array_merge($feed->get('notes'), $notes);
             $feed->set('notes', $notes);
+        }
+
+        if ($activities) {
+            if (isJson(json_encode($activities))) {
+                $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
+                $feedActivities[] = $activities;
+                $feed->activities = json_encode($feedActivities);
+                $feed->saveOrFail();
+                $activity = $feed->getActivity();
+                if ($activity) {
+                    $grouped = $activity->mapToGroups(function ($item, $key) {
+                        return [
+                            $item['type'] => [
+                                 $item['text'],
+                                 $item ['username']
+                            ]
+                        ];
+                    });
+                    $total =  $grouped->get($activities['type'])->all();
+                    if (count($total) > 1) {
+                        $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
+                    } else {
+                        $messageActivity = $activities['username']  . ' '.$activities['text'];
+                    }
+                    $feed->set('message_activity', $messageActivity);
+                }
+            }
         }
     }
 

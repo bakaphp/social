@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Kanvas\Social\Models;
 
 use Baka\Contracts\Auth\UserInterface;
+use function Baka\isJson;
 use Canvas\Contracts\CustomFields\CustomFieldsTrait;
+use Illuminate\Support\Collection;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Paginator\Adapter\Model;
@@ -22,6 +24,7 @@ class UserMessages extends BaseModel
     public int $is_reported = 0;
     public ?string $reactions = null;
     public ?string $saved_lists = null;
+    public ?string $activities = null;
 
     /**
      * Initialize method for model.
@@ -66,5 +69,18 @@ class UserMessages extends BaseModel
         );
 
         return $userFeeds;
+    }
+
+    /**
+     * getActivity.
+     *
+     * @return ?Collection
+     */
+    public function getActivity() : ?Collection
+    {
+        if (isJson($this->activities)) {
+            return collect(json_decode($this->activities, true));
+        }
+        return null;
     }
 }
