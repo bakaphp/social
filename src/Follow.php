@@ -226,13 +226,13 @@ class Follow
 
     
     /**
-     * setActivity
+     * addActivities
      *
      * @param  UserMessages $feed
      * @param  array $activities
      * @return void
      */
-    protected static function setActivity(UserMessages $feed, ?array $activities = null) : void
+    protected static function addActivities(UserMessages $feed, ?array $activities = null) : void
     {
         if (isJson(json_encode($activities))) {
             $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
