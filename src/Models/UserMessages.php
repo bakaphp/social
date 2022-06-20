@@ -64,6 +64,7 @@ class UserMessages extends BaseModel
             where user_messages.users_id = {$user->getId()}
             and user_messages.is_deleted = 0 
             and messages.apps_id = {$appData->getId()}
+            ORDER id DESC
             limit {$limit} OFFSET {$offSet}"
             )
         );
