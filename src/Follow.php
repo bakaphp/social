@@ -234,29 +234,27 @@ class Follow
      */
     protected static function addActivities(UserMessages $feed, ?array $activities = null) : void
     {
-        if (isJson(json_encode($activities))) {
-            $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
-            $feedActivities[] = $activities;
-            $feed->activities = json_encode($feedActivities);
-            $feed->saveOrFail();
-            $activity = $feed->getActivity();
-            if ($activity) {
-                $grouped = $activity->mapToGroups(function ($item, $key) {
-                    return [
+        $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
+        $feedActivities[] = $activities;
+        $feed->activities = json_encode($feedActivities);
+        $feed->saveOrFail();
+        $activity = $feed->getActivity();
+        if ($activity) {
+            $grouped = $activity->mapToGroups(function ($item, $key) {
+                return [
                         $item['type'] => [
                              $item['text'],
                              $item ['username']
                         ]
                     ];
-                });
-                $total =  $grouped->get($activities['type'])->all();
-                if (count($total) > 1) {
-                    $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
-                } else {
-                    $messageActivity = $activities['username']  . ' '.$activities['text'];
-                }
-                $feed->set('message_activity', $messageActivity);
+            });
+            $total =  $grouped->get($activities['type'])->all();
+            if (count($total) > 1) {
+                $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
+            } else {
+                $messageActivity = $activities['username']  . ' '.$activities['text'];
             }
+            $feed->set('message_activity', $messageActivity);
         }
     }
 }
