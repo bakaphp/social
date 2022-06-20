@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
+use function Baka\isJson;
 use Kanvas\Social\Contracts\Follows\FollowableInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
@@ -180,7 +181,7 @@ class Follow
      *
      * @return void
      */
-    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes) : void
+    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
     {
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
@@ -200,6 +201,10 @@ class Follow
             $notes = array_merge($feed->get('notes'), $notes);
             $feed->set('notes', $notes);
         }
+
+        if ($activities) {
+            self::addActivities($feed, $activities);
+        }
     }
 
     /**
@@ -211,36 +216,45 @@ class Follow
      *
      * @return void
      */
-    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes) : void
+    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
     {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
-            self::addToFeed($follower->user, $message, $notes);
+            self::addToFeed($follower->user, $message, $notes, $activities);
         }
     }
 
+    
     /**
-     * getFeed.
+     * addActivities
      *
-     * @param  UserInterface $user
-     * @param  int $limit
-     * @param  int $page
-     *
-     * @return Simple
+     * @param  UserMessages $feed
+     * @param  array $activities
+     * @return void
      */
-    public static function getFeed(UserInterface $user, int $limit = 10, int $page = 1) : Simple
+    protected static function addActivities(UserMessages $feed, ?array $activities = null) : void
     {
-        $offset = ($page - 1) * $limit;
-        return Messages::findByRawSql(
-            'SELECT messages.* FROM messages 
-            INNER JOIN user_messages ON user_messages.messages_id = messages.id 
-            WHERE user_messages.users_id = ? AND user_messages.is_deleted = 0 AND messages.is_deleted = 0
-            ORDER BY messages.created_at DESC LIMIT ?,?',
-            [
-                $user->getId(),
-                $offset,
-                $limit
-            ]
-        );
+        $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
+        $feedActivities[] = $activities;
+        $feed->activities = json_encode($feedActivities);
+        $feed->saveOrFail();
+        $activity = $feed->getActivity();
+        if ($activity) {
+            $grouped = $activity->mapToGroups(function ($item, $key) {
+                return [
+                        $item['type'] => [
+                             $item['text'],
+                             $item ['username']
+                        ]
+                    ];
+            });
+            $total =  $grouped->get($activities['type'])->all();
+            if (count($total) > 1) {
+                $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
+            } else {
+                $messageActivity = $activities['username']  . ' '.$activities['text'];
+            }
+            $feed->set('message_activity', $messageActivity);
+        }
     }
 }

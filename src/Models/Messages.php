@@ -44,6 +44,11 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     public ?int $total_liked = 0;
     public ?int $total_saved = 0;
     public ?int $total_shared = 0;
+    public int $is_liked = 0;
+    public int $is_saved = 0;
+    public int $is_shared = 0;
+    public int $is_reported = 0;
+
 
     /**
      * dynamic field added by user_messages on find.

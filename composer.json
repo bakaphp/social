@@ -17,7 +17,8 @@
     "require": {
         "php": ">= 7.4",
         "ext-phalcon": ">=4",
-        "canvas/core": "0.3.x-dev"
+        "canvas/core": "0.3.x-dev",
+        "illuminate/collections": "v8.83.16"
     },
     "require-dev": {
         "codeception/codeception": "^4.1",
