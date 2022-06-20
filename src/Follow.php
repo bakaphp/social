@@ -181,7 +181,7 @@ class Follow
      *
      * @return void
      */
-    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes, ?array $activities = null) : void
+    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
     {
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
@@ -239,11 +239,11 @@ class Follow
      *
      * @return void
      */
-    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes) : void
+    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
     {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
-            self::addToFeed($follower->user, $message, $notes);
+            self::addToFeed($follower->user, $message, $notes, $activities);
         }
     }
 }
