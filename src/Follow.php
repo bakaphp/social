@@ -203,30 +203,7 @@ class Follow
         }
 
         if ($activities) {
-            if (isJson(json_encode($activities))) {
-                $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
-                $feedActivities[] = $activities;
-                $feed->activities = json_encode($feedActivities);
-                $feed->saveOrFail();
-                $activity = $feed->getActivity();
-                if ($activity) {
-                    $grouped = $activity->mapToGroups(function ($item, $key) {
-                        return [
-                            $item['type'] => [
-                                 $item['text'],
-                                 $item ['username']
-                            ]
-                        ];
-                    });
-                    $total =  $grouped->get($activities['type'])->all();
-                    if (count($total) > 1) {
-                        $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
-                    } else {
-                        $messageActivity = $activities['username']  . ' '.$activities['text'];
-                    }
-                    $feed->set('message_activity', $messageActivity);
-                }
-            }
+            self::addActivities($feed, $activities);
         }
     }
 
@@ -244,6 +221,42 @@ class Follow
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
             self::addToFeed($follower->user, $message, $notes, $activities);
+        }
+    }
+
+    
+    /**
+     * setActivity
+     *
+     * @param  UserMessages $feed
+     * @param  array $activities
+     * @return void
+     */
+    protected static function setActivity(UserMessages $feed, ?array $activities = null) : void
+    {
+        if (isJson(json_encode($activities))) {
+            $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
+            $feedActivities[] = $activities;
+            $feed->activities = json_encode($feedActivities);
+            $feed->saveOrFail();
+            $activity = $feed->getActivity();
+            if ($activity) {
+                $grouped = $activity->mapToGroups(function ($item, $key) {
+                    return [
+                        $item['type'] => [
+                             $item['text'],
+                             $item ['username']
+                        ]
+                    ];
+                });
+                $total =  $grouped->get($activities['type'])->all();
+                if (count($total) > 1) {
+                    $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
+                } else {
+                    $messageActivity = $activities['username']  . ' '.$activities['text'];
+                }
+                $feed->set('message_activity', $messageActivity);
+            }
         }
     }
 }
