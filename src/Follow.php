@@ -249,12 +249,9 @@ class Follow
                     ];
             });
             $total =  $grouped->get($activities['type'])->all();
-            if (count($total) > 1) {
-                $messageActivity = $activities['username'] .' and others '. count($total).' '.$activities['text'];
-            } else {
-                $messageActivity = $activities['username']  . ' '.$activities['text'];
-            }
-            $feed->set('message_activity', $messageActivity);
+            $feed->set('message_activity_count', $total);
+            $feed->set('message_type_activity', $activities['type']);
+            $feed->set('message_activity_username', $activities['username']);
         }
     }
 }
