@@ -40,6 +40,7 @@ class UserMessages
             AND user_messages.is_deleted = 0 
             AND messages.is_deleted = 0
             AND messages.apps_id = :appId
+            ORDER BY id DESC
             LIMIT :limit OFFSET :offset',
                 [
                     'userId' => $user->getId(),
