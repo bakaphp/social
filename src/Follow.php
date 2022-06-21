@@ -254,5 +254,6 @@ class Follow
         $feed->set('message_activity_count', $total);
         $feed->set('message_type_activity', $activities['type']);
         $feed->set('message_activity_username', $activities['username']);
+        $feed->set('message_activity_text', $activities['text']);
     }
 }

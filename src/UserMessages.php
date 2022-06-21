@@ -80,6 +80,7 @@ class UserMessages
             'message_activity_count' =>  $userMessages->get('message_activity_count'),
             'message_type_activity' =>  $userMessages->get('message_type_activity'),
             'message_activity_username' =>  $userMessages->get('message_activity_username'),
+            'message_activity_text' =>  $userMessages->get('message_activity_text'),
         ];
     }
     /**
