@@ -8,6 +8,7 @@ use Baka\Contracts\Auth\UserInterface;
 use Kanvas\Social\Models\Messages as MessagesModel;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
+use Kanvas\Social\Models\UserMessages as UserMessagesModel;
 
 class UserMessages
 {
@@ -52,7 +53,35 @@ class UserMessages
             )
         );
     }
+    
+    /**
+     * getInteractions
+     *
+     * @param  UserInterface $user
+     * @param  MessagesModel $message
+     * @return array
+     */
+    public static function getInteractions(UserInterface $user, MessagesModel $message) : array
+    {
+        $userMessages = UserMessagesModel::findFirst([
+            'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+            'bind' => [
+                'userId' => $user->getId(),
+                'messageId' => $message->getId(),
+            ]
+        ]);
 
+        return  [
+            'notes' => $userMessages->notes,
+            'is_liked' => $userMessages->is_liked,
+            'is_saved' => $userMessages->is_saved,
+            'is_shared' => $userMessages->is_shared,
+            'is_reported' => $userMessages->is_reported,
+            'message_activity_count' =>  $userMessages->get('message_activity_count'),
+            'message_type_activity' =>  $userMessages->get('message_type_activity'),
+            'message_activity_username' =>  $userMessages->get('message_activity_username'),
+        ];
+    }
     /**
      * Get the count of all user messages.
      *
