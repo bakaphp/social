@@ -241,15 +241,12 @@ class Follow
         $activity = $feed->getActivity();
         $total = 1;
         if ($activity) {
-            $grouped = $activity->mapToGroups(function ($item, $key) {
-                return [
-                        $item['type'] => [
-                             $item['text'],
-                             $item ['username']
-                        ]
-                    ];
-            });
-            $total =  $grouped->get($activities['type'])->all()->count();
+            if ($activity) {
+                $grouped = $activity->groupBy('type')->map(function ($values) {
+                    return $values->count();
+                })->sort()->reverse();
+                $total =  $grouped->get($activities['type']);
+            }
         }
         $feed->set('message_activity_count', $total);
         $feed->set('message_type_activity', $activities['type']);
