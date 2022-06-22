@@ -239,6 +239,7 @@ class Follow
         $feed->activities = json_encode($feedActivities);
         $feed->saveOrFail();
         $activity = $feed->getActivity();
+        $total = 1;
         if ($activity) {
             $grouped = $activity->mapToGroups(function ($item, $key) {
                 return [
@@ -248,10 +249,11 @@ class Follow
                         ]
                     ];
             });
-            $total =  $grouped->get($activities['type'])->all();
-            $feed->set('message_activity_count', $total);
-            $feed->set('message_type_activity', $activities['type']);
-            $feed->set('message_activity_username', $activities['username']);
+            $total =  $grouped->get($activities['type'])->all()->count();
         }
+        $feed->set('message_activity_count', $total);
+        $feed->set('message_type_activity', $activities['type']);
+        $feed->set('message_activity_username', $activities['username']);
+        $feed->set('message_activity_text', $activities['text']);
     }
 }
