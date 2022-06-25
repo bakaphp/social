@@ -118,4 +118,46 @@ class UserMessages
 
         return $result[0]->count;
     }
+
+    
+    /**
+     * like
+     *
+     * @param  UserInterface $user
+     * @param  MessagesModel $model
+     * @return void
+     */
+    public static function like(UserInterface $user, MessagesModel $model): void
+    {
+        $userMessages = UserMessagesModel::findFirst([
+            'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+            'bind' => [
+                'userId' => $user->getId(),
+                'messageId' => $message->getId(),
+            ]
+        ]);
+        $userMessages->is_liked = $userMessages->is_liked ? 0 : 1;
+        $userMessages->saveOrFail();
+    }
+
+    
+    /**
+     * save
+     *
+     * @param  UserInterface $user
+     * @param  MessagesModel $model
+     * @return void
+     */
+    public static function save(UserInterface $user, MessagesModel $model) : void
+    {
+        $userMessages = UserMessagesModel::findFirst([
+            'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+            'bind' => [
+                'userId' => $user->getId(),
+                'messageId' => $message->getId(),
+            ]
+        ]);
+        $userMessages->is_saved = $userMessages->is_liked ? 0 : 1;
+        $userMessages->saveOrFail();
+    }
 }
