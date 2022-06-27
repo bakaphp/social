@@ -154,7 +154,7 @@ class UserMessages
      * @param  MessagesModel $message
      * @return void
      */
-    public static function save(UserInterface $user, MessagesModel $message) : void
+    public static function save(UserInterface $user, MessagesModel $message): void
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
