@@ -127,7 +127,7 @@ class UserMessages
      * @param  MessagesModel $model
      * @return void
      */
-    public static function like(UserInterface $user, MessagesModel $model): void
+    public static function like(UserInterface $user, MessagesModel $message): void
     {
         $userMessages = UserMessagesModel::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
@@ -145,10 +145,10 @@ class UserMessages
      * save
      *
      * @param  UserInterface $user
-     * @param  MessagesModel $model
+     * @param  MessagesModel $message
      * @return void
      */
-    public static function save(UserInterface $user, MessagesModel $model) : void
+    public static function save(UserInterface $user, MessagesModel $message) : void
     {
         $userMessages = UserMessagesModel::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
