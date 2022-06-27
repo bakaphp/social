@@ -21,7 +21,7 @@ trait UsersInteractionsTrait
      */
     public function interact(ModelInterface $entity, string $interactionName) : bool
     {
-        return SocialInteractions::add($this, $entity, $interactionName);
+        return (bool)!SocialInteractions::add($this, $entity, $interactionName)->is_deleted;
     }
 
     /**
