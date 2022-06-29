@@ -71,11 +71,14 @@ class UserMessages
             ]
         ]);
         $activity = $userMessages->getActivity();
-        $lastActivity = $activity->last();
-        $grouped = $activity->groupBy('type')->map(function ($values) {
-            return $values->count();
-        })->sort()->reverse();
-        $total =  $grouped->get($lastActivity['type']);
+        $total = 0;
+        if ($activity) {
+            $lastActivity = $activity->last();
+            $grouped = $activity->groupBy('type')->map(function ($values) {
+                return $values->count();
+            })->sort()->reverse();
+            $total =  $grouped->get($lastActivity['type']);
+        }
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
