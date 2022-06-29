@@ -132,7 +132,7 @@ class UserMessages
      * @param  MessagesModel $model
      * @return void
      */
-    public static function like(UserInterface $user, MessagesModel $message): void
+    public static function like(UserInterface $user, MessagesModel $message) : void
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
@@ -159,7 +159,7 @@ class UserMessages
      * @param  MessagesModel $message
      * @return void
      */
-    public static function save(UserInterface $user, MessagesModel $message): void
+    public static function save(UserInterface $user, MessagesModel $message) : void
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
