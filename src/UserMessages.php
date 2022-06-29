@@ -70,17 +70,22 @@ class UserMessages
                 'messageId' => $message->getId(),
             ]
         ]);
-
+        $activity = $userMessages->getActivity();
+        $lastActivity = $activity->last();
+        $grouped = $activity->groupBy('type')->map(function ($values) {
+            return $values->count();
+        })->sort()->reverse();
+        $total =  $grouped->get($activities['type']);
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $userMessages->get('message_activity_count'),
-            'message_type_activity' =>  $userMessages->get('message_type_activity'),
-            'message_activity_username' =>  $userMessages->get('message_activity_username'),
-            'message_activity_text' =>  $userMessages->get('message_activity_text'),
+            'message_activity_count' =>  $total,
+            'message_type_activity' =>  $lastActivity['type'],
+            'message_activity_username' => $lastActivity['username'],
+            'message_activity_text' =>  $lastActivity['text'],
         ];
     }
     /**
