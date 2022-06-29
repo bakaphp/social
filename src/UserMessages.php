@@ -136,13 +136,14 @@ class UserMessages
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
-                'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+                'conditions' => 'users_id = :userId: AND messages_id = :messageId:',
                 'bind' => [
                     'userId' => $user->getId(),
                     'messageId' => $message->getId(),
                 ]
             ],
             [
+                'is_deleted' => 1,
                 'users_id' => $user->getId(),
                 'messages_id' => $message->getId(),
             ]
@@ -163,13 +164,14 @@ class UserMessages
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
-                'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
+                'conditions' => 'users_id = :userId: AND messages_id = :messageId:',
                 'bind' => [
                     'userId' => $user->getId(),
                     'messageId' => $message->getId(),
                 ]
             ],
             [
+                'is_deleted' => 1,
                 'users_id' => $user->getId(),
                 'messages_id' => $message->getId(),
             ]
