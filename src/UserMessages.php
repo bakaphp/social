@@ -75,7 +75,7 @@ class UserMessages
         $grouped = $activity->groupBy('type')->map(function ($values) {
             return $values->count();
         })->sort()->reverse();
-        $total =  $grouped->get($activities['type']);
+        $total =  $grouped->get($lastActivity['type']);
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
