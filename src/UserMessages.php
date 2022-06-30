@@ -77,7 +77,7 @@ class UserMessages
             $grouped = $activity->groupBy('type')->map(function ($values) {
                 return $values->count();
             })->sort()->reverse();
-            $total =  $grouped->get($lastActivity['type']) - 1;
+            $total =  $grouped->get($lastActivity['type']);
         }
         return  [
             'notes' => $userMessages->notes,
