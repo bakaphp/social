@@ -71,7 +71,7 @@ class UserMessages
             ]
         ]);
         $activity = $userMessages->getActivity();
-        $total = 0;
+        $total = 1;
         if ($activity) {
             $lastActivity = $activity->last();
             $grouped = $activity->groupBy('type')->map(function ($values) {
@@ -85,7 +85,7 @@ class UserMessages
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $total,
+            'message_activity_count' =>  $total - 1,
             'message_type_activity' =>  $lastActivity['type'] ?? '',
             'message_activity_username' => $lastActivity['username'] ?? '',
             'message_activity_text' =>  $lastActivity['text'] ?? '',
