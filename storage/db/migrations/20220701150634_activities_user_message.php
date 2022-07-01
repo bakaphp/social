@@ -22,7 +22,7 @@ final class ActivitiesUserMessage extends AbstractMigration
             ->addColumn('user_messages_id', 'integer', ['null' => false])
             ->addColumn('from_entity_id', 'integer', ['null' => false])
             ->addColumn('type', 'string', ['null' => false])
-            ->addColumn('text', 'text', ['null' => false, 'collaction' => 'utf8mb4_bin'])
+            ->addColumn('text', 'text', ['null' => false, 'collation' => 'utf8mb4_general_ci'])
             ->addColumn('created_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
             ->addColumn('updated_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => true])
             ->addColumn('is_deleted', 'integer', ['default' => 0])
