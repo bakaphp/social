@@ -34,6 +34,7 @@ class UserMessages extends BaseModel
         parent::initialize();
         $this->setSource('user_messages');
         $this->belongsTo('messages_id', Messages::class, 'id', ['alias' => 'message']);
+        $this->hasMany('id', UserMessagesActivities::class, 'user_messages_id', ['alias' => 'activities']);
     }
 
     /**

@@ -85,7 +85,7 @@ class UserMessages
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $total - 1,
+            'message_activity_count' =>  $total,
             'message_type_activity' =>  $lastActivity['type'] ?? '',
             'message_activity_username' => $lastActivity['username'] ?? '',
             'message_activity_text' =>  $lastActivity['text'] ?? '',
