@@ -250,9 +250,13 @@ class Follow
                     'text' => $activity['text']
                 ]);
                 $activity->delete();
+                if (!$userMessage->getActivities()->count()) {
+                    $userMessage->delete();
+                }
                 continue;
             }
             $userMessage->delete();
+            Di::getDefault()->get('log')->info('Delete Feed by user '.$follow->user->id.' Entity '.$entity->getId());
         }
     }
     /**
