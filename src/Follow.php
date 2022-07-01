@@ -14,6 +14,7 @@ use Kanvas\Social\Models\UsersFollows;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Mvc\ModelInterface;
+use Kanvas\Social\Models\UserMessagesActivities;
 
 class Follow
 {
@@ -181,7 +182,7 @@ class Follow
      *
      * @return void
      */
-    public static function addToFeed(UserInterface $user, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
+    public static function addToFeed(FollowableInterface $from, UserInterface $user, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
     {
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
@@ -203,7 +204,7 @@ class Follow
         }
 
         if ($activities) {
-            self::addActivities($feed, $activities);
+            self::addActivities($from, $feed, $activities);
         }
     }
 
@@ -220,11 +221,40 @@ class Follow
     {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
-            self::addToFeed($follower->user, $message, $notes, $activities);
+            self::addToFeed($entity, $follower->user, $message, $notes, $activities);
         }
     }
-
     
+    /**
+     * removeToFollowers
+     *
+     * @param  FollowableInterface $entity
+     * @param  MessagesInterface $message
+     * @param  array $activity
+     * @return void
+     */
+    public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity): void
+    {
+        foreach (self::getFollowers($entity) as $follow) {
+            $userMessage = UserMessages::findFirst([
+                'conditions' => 'users_id = :users_id: AND messages_id = :messages_id:',
+                'bind' => [
+                    'users_id' => $follow->user->id,
+                    'messages_id' => $message->id,
+                ]
+            ]);
+            if ($userMessage->getActivities()->count()) {
+                $activity = $userMessage->getActivities([
+                    'from_entity_id' => $entity->getId(),
+                    'type' =>  $activity['type'],
+                    'text' => $activity['text']
+                ]);
+                $activity->delete();
+                continue;
+            }
+            $userMessage->delete();
+        }
+    }
     /**
      * addActivities
      *
@@ -232,25 +262,13 @@ class Follow
      * @param  array $activities
      * @return void
      */
-    protected static function addActivities(UserMessages $feed, ?array $activities = null) : void
+    protected static function addActivities(FollowableInterface $from, UserMessages $feed, ?array $activity = null) : void
     {
-        $feedActivities = $feed->activities ? json_decode($feed->activities, true) : [];
-        $feedActivities[] = $activities;
-        $feed->activities = json_encode($feedActivities);
-        $feed->saveOrFail();
-        $activity = $feed->getActivity();
-        $total = 1;
-        if ($activity) {
-            if ($activity) {
-                $grouped = $activity->groupBy('type')->map(function ($values) {
-                    return $values->count();
-                })->sort()->reverse();
-                $total =  $grouped->get($activities['type']);
-            }
-        }
-        $feed->set('message_activity_count', $total);
-        $feed->set('message_type_activity', $activities['type']);
-        $feed->set('message_activity_username', $activities['username']);
-        $feed->set('message_activity_text', $activities['text']);
+        $activities = new UserMessagesActivities();
+        $activities->user_messages_id = $feed->getId();
+        $activities->from_entity_id = $from->getId();
+        $activities->type = $activity['type'];
+        $activities->text = $activity['text'];
+        $activities->saveOrFail();
     }
 }
