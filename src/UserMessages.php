@@ -74,10 +74,7 @@ class UserMessages
             'sort' => 'id ASC'
         ])->toArray();
         $count = $userMessages->getActivities([
-            'conditions' => 'type = :type:',
-            'bind' => [
-                'type' => $activity[0]['type']
-            ]
+            'sort' => 'id DESC'
          ])->count();
         return  [
             'notes' => $userMessages->notes,
@@ -85,7 +82,7 @@ class UserMessages
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $total,
+            'message_activity_count' =>  $count,
             'message_type_activity' =>  $activity[0]['type'] ?? '',
             'message_activity_username' => $activity[0]['username'] ?? '',
             'message_activity_text' =>  $activity[0]['text'] ?? '',
