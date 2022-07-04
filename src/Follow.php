@@ -247,7 +247,8 @@ class Follow
                 $activity = $userMessage->getActivities([
                     'from_entity_id' => $entity->getId(),
                     'type' =>  $activity['type'],
-                    'text' => $activity['text']
+                    'text' => $activity['text'],
+                    'username' => $activity['username']
                 ]);
                 $activity->delete();
                 if (!$userMessage->getActivities()->count()) {
