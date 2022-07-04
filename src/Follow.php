@@ -244,16 +244,16 @@ class Follow
                 ]
             ]);
             if ($userMessage->getActivities()->count()) {
-                $activity = $userMessage->getActivities([
-                'conditions' => 'from_entity_id = :from_entity_id: AND type=:type: AND text=:text: AND username=:username:',
-                'bind' => [
-                    'from_entity_id' => $entity->getId(),
-                    'type' =>  $activity['type'],
-                    'text' => $activity['text'],
-                    'username' => $activity['username']
-                ]
-            ]);
-                $activity->delete();
+                $userActivity = $userMessage->getActivities([
+                    'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
+                    'bind' => [
+                        'from_entity_id' => $entity->getId(),
+                        'type' =>  $activity['type'],
+                        'text' => $activity['text'],
+                        'username' => $activity['username']
+                    ]
+                ]);
+                $userActivity->delete();
                 if (!$userMessage->getActivities()->count()) {
                     $userMessage->delete();
                 }
