@@ -70,25 +70,27 @@ class UserMessages
                 'messageId' => $message->getId(),
             ]
         ]);
-        $activity = $userMessages->getActivity();
-        $total = 1;
-        if ($activity) {
-            $lastActivity = $activity->last();
-            $grouped = $activity->groupBy('type')->map(function ($values) {
-                return $values->count();
-            })->sort()->reverse();
-            $total =  $grouped->get($lastActivity['type']);
-        }
+        $activity  =  $userMessages->getActivities([
+            'sort' => 'id ASC'
+        ]);
+        $activity = $activity ? $activity->getFirst() : null;
+        $count = $userMessages->countActivities([
+            'sort' => 'id DESC',
+            'conditions' => 'type = :type:',
+            'bind' => [
+                'type' => $activity ? $activity->type : null
+            ]
+        ]);
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $total,
-            'message_type_activity' =>  $lastActivity['type'] ?? '',
-            'message_activity_username' => $lastActivity['username'] ?? '',
-            'message_activity_text' =>  $lastActivity['text'] ?? '',
+            'message_activity_count' =>  $count,
+            'message_type_activity' =>  $activity ? $activity->type: '',
+            'message_activity_username' => $activity ? $activity->username: '',
+            'message_activity_text' =>  $activity ? $activity->text: '',
         ];
     }
     /**

@@ -273,6 +273,7 @@ class Follow
         $activities->from_entity_id = $from->getId();
         $activities->type = $activity['type'];
         $activities->text = $activity['text'];
+        $activities->username = $activity['username'];
         $activities->saveOrFail();
     }
 }

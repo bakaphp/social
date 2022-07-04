@@ -9,6 +9,7 @@ class UserMessagesActivities extends BaseModel
     public int $user_messages_id;
     public int $from_entity_id;
     public string $type;
+    public ?string $username = null;
     public string $text;
     
     /**
