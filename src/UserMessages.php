@@ -70,12 +70,17 @@ class UserMessages
                 'messageId' => $message->getId(),
             ]
         ]);
-        $activity = $userMessages->getActivities([
+        $activity  =  $userMessages->getActivities([
             'sort' => 'id ASC'
-        ])->toArray();
-        $count = $userMessages->getActivities([
-            'sort' => 'id DESC'
-         ])->count();
+        ]);
+        $activity = $activity ? $activity->getFirst() : null;
+        $count = $userMessages->countActivities([
+            'sort' => 'id DESC',
+            'conditions' => 'type = :type:',
+            'bind' => [
+                'type' => $activity ? $activity->type : null
+            ]
+        ]);
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
@@ -83,9 +88,9 @@ class UserMessages
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
             'message_activity_count' =>  $count,
-            'message_type_activity' =>  $activity[0]['type'] ?? '',
-            'message_activity_username' => $activity[0]['username'] ?? '',
-            'message_activity_text' =>  $activity[0]['text'] ?? '',
+            'message_type_activity' =>  $activity ? $activity->type: '',
+            'message_activity_username' => $activity ? $activity->username: '',
+            'message_activity_text' =>  $activity ? $activity->text: '',
         ];
     }
     /**
