@@ -199,8 +199,10 @@ class Follow
             $feed->saveOrFail();
             $feed->set('notes', $notes);
         } else {
-            $notes = array_merge($feed->get('notes'), $notes);
-            $feed->set('notes', $notes);
+            if ($notes) {
+                $notes = array_merge($feed->get('notes'), $notes);
+                $feed->set('notes', $notes);
+            }
         }
 
         if ($activities) {
