@@ -6,9 +6,9 @@ namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
 use Kanvas\Social\Models\Messages as MessagesModel;
+use Kanvas\Social\Models\UserMessages as UserMessagesModel;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
-use Kanvas\Social\Models\UserMessages as UserMessagesModel;
 
 class UserMessages
 {
@@ -21,18 +21,18 @@ class UserMessages
      *
      * @return Simple
      */
-    public static function getAll(UserInterface $user, int $page = 1, int $limit = 25) : Simple
+    public static function getAllAsUserMessages(UserInterface $user, int $page = 1, int $limit = 25) : Simple
     {
         $appData = Di::getDefault()->get('app');
 
         $offSet = ($page - 1) * $limit;
-        $message = new MessagesModel();
+        $message = new UserMessagesModel();
 
         return new Simple(
             null,
             $message,
             $message->getReadConnection()->query(
-                'SELECT  * 
+                'SELECT user_messages.* 
             FROM 
                 user_messages 
                 LEFT JOIN 
@@ -53,12 +53,55 @@ class UserMessages
             )
         );
     }
-    
+
     /**
-     * getInteractions
+     * Get all the messages of a user.
+     *
+     * @param UserInterface $user
+     * @param int $limit
+     * @param int $page
+     *
+     * @return Simple
+     */
+    public static function getAll(UserInterface $user, int $page = 1, int $limit = 25) : Simple
+    {
+        $appData = Di::getDefault()->get('app');
+
+        $offSet = ($page - 1) * $limit;
+        $message = new MessagesModel();
+
+        return new Simple(
+            null,
+            $message,
+            $message->getReadConnection()->query(
+                'SELECT *
+            FROM 
+                user_messages
+                LEFT JOIN 
+                messages on messages.id = user_messages.messages_id 
+            WHERE user_messages.users_id = :userId
+            AND user_messages.is_deleted = 0 
+            AND messages.is_deleted = 0
+            AND messages.apps_id = :appId
+            ORDER BY user_messages.created_at DESC
+            LIMIT :limit OFFSET :offset',
+                [
+                    'userId' => $user->getId(),
+                    'limit' => $limit,
+                    'offset' => $offSet,
+                    'appId' => $appData->getId()
+
+                ]
+            )
+        );
+    }
+
+    /**
+     * getInteractions.
      *
      * @param  UserInterface $user
      * @param  MessagesModel $message
+     *
      * @return array
      */
     public static function getInteractions(UserInterface $user, MessagesModel $message) : array
@@ -70,7 +113,8 @@ class UserMessages
                 'messageId' => $message->getId(),
             ]
         ]);
-        $activity  =  $userMessages->getActivities([
+
+        $activity = $userMessages->getActivities([
             'sort' => 'id ASC'
         ]);
         $activity = $activity ? $activity->getFirst() : null;
@@ -81,16 +125,17 @@ class UserMessages
                 'type' => $activity ? $activity->type : null
             ]
         ]);
+
         return  [
             'notes' => $userMessages->notes,
             'is_liked' => $userMessages->is_liked,
             'is_saved' => $userMessages->is_saved,
             'is_shared' => $userMessages->is_shared,
             'is_reported' => $userMessages->is_reported,
-            'message_activity_count' =>  $count,
-            'message_type_activity' =>  $activity ? $activity->type: '',
-            'message_activity_username' => $activity ? $activity->username: '',
-            'message_activity_text' =>  $activity ? $activity->text: '',
+            'message_activity_count' => $count,
+            'message_type_activity' => $activity ? $activity->type : '',
+            'message_activity_username' => $activity ? $activity->username : '',
+            'message_activity_text' => $activity ? $activity->text : '',
         ];
     }
     /**
@@ -129,12 +174,13 @@ class UserMessages
         return $result[0]->count;
     }
 
-    
+
     /**
-     * like
+     * like.
      *
      * @param  UserInterface $user
      * @param  MessagesModel $model
+     *
      * @return void
      */
     public static function like(UserInterface $user, MessagesModel $message) : void
@@ -157,12 +203,13 @@ class UserMessages
         $userMessages->saveOrFail();
     }
 
-    
+
     /**
-     * save
+     * save.
      *
      * @param  UserInterface $user
      * @param  MessagesModel $message
+     *
      * @return void
      */
     public static function save(UserInterface $user, MessagesModel $message) : void
