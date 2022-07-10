@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
-use function Baka\isJson;
 use Kanvas\Social\Contracts\Follows\FollowableInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Models\Interactions;
 use Kanvas\Social\Models\UserMessages;
+use Kanvas\Social\Models\UserMessagesActivities;
 use Kanvas\Social\Models\UsersFollows;
 use Phalcon\Di;
 use Phalcon\Mvc\Model\Resultset\Simple;
 use Phalcon\Mvc\ModelInterface;
-use Kanvas\Social\Models\UserMessagesActivities;
 
 class Follow
 {
@@ -223,19 +222,28 @@ class Follow
     {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
-            self::addToFeed($entity, $follower->user, $message, $notes, $activities);
+            if ($follower->user instanceof UserInterface) {
+                self::addToFeed(
+                    $entity,
+                    $follower->user,
+                    $message,
+                    $notes,
+                    $activities
+                );
+            }
         }
     }
-    
+
     /**
-     * removeToFollowers
+     * removeToFollowers.
      *
      * @param  FollowableInterface $entity
      * @param  MessagesInterface $message
      * @param  array $activity
+     *
      * @return void
      */
-    public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity): void
+    public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity) : void
     {
         foreach (self::getFollowers($entity) as $follow) {
             $userMessage = UserMessages::findFirst([
@@ -250,7 +258,7 @@ class Follow
                     'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
                     'bind' => [
                         'from_entity_id' => $entity->getId(),
-                        'type' =>  $activity['type'],
+                        'type' => $activity['type'],
                         'text' => $activity['text'],
                         'username' => $activity['username']
                     ]
@@ -262,14 +270,15 @@ class Follow
                 continue;
             }
             $userMessage->delete();
-            Di::getDefault()->get('log')->info('Delete Feed by user '.$follow->user->id.' Entity '.$entity->getId());
+            Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
         }
     }
     /**
-     * addActivities
+     * addActivities.
      *
      * @param  UserMessages $feed
      * @param  array $activities
+     *
      * @return void
      */
     protected static function addActivities(FollowableInterface $from, UserMessages $feed, ?array $activity = null) : void
