@@ -172,12 +172,16 @@ class Follow
             ]
         ]);
     }
+
+
     /**
      * addToFeed.
      *
-     * @param  UserInterface $user
-     * @param  MessagesInterface $message
-     * @param  ?array $notes
+     * @param FollowableInterface $from
+     * @param UserInterface $user
+     * @param MessagesInterface $message
+     * @param array|null $notes
+     * @param array|null $activities
      *
      * @return void
      */
@@ -228,8 +232,7 @@ class Follow
         MessagesInterface $message,
         ?array $notes = null,
         ?array $activities = null
-    ) : void
-    {
+    ) : void {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
             if ($follower->user instanceof UserInterface) {
