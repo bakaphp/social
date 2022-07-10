@@ -181,8 +181,13 @@ class Follow
      *
      * @return void
      */
-    public static function addToFeed(FollowableInterface $from, UserInterface $user, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
-    {
+    public static function addToFeed(
+        FollowableInterface $from,
+        UserInterface $user,
+        MessagesInterface $message,
+        ?array $notes = null,
+        ?array $activities = null
+    ) : void {
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
             'bind' => [
@@ -218,7 +223,12 @@ class Follow
      *
      * @return void
      */
-    public static function feedToFollowers(FollowableInterface $entity, MessagesInterface $message, ?array $notes = null, ?array $activities = null) : void
+    public static function feedToFollowers(
+        FollowableInterface $entity,
+        MessagesInterface $message,
+        ?array $notes = null,
+        ?array $activities = null
+    ) : void
     {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
@@ -245,32 +255,35 @@ class Follow
      */
     public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity) : void
     {
-        foreach (self::getFollowers($entity) as $follow) {
-            $userMessage = UserMessages::findFirst([
-                'conditions' => 'users_id = :users_id: AND messages_id = :messages_id:',
-                'bind' => [
-                    'users_id' => $follow->user->id,
-                    'messages_id' => $message->id,
-                ]
-            ]);
-            if ($userMessage->getActivities()->count()) {
-                $userActivity = $userMessage->getActivities([
-                    'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
+        $followers = self::getFollowers($entity) ;
+        foreach ($followers as $follow) {
+            if ($follow->user instanceof UserInterface) {
+                $userMessage = UserMessages::findFirst([
+                    'conditions' => 'users_id = :users_id: AND messages_id = :messages_id:',
                     'bind' => [
-                        'from_entity_id' => $entity->getId(),
-                        'type' => $activity['type'],
-                        'text' => $activity['text'],
-                        'username' => $activity['username']
+                        'users_id' => $follow->user->id,
+                        'messages_id' => $message->id,
                     ]
                 ]);
-                $userActivity->delete();
-                if (!$userMessage->getActivities()->count()) {
-                    $userMessage->delete();
+                if ($userMessage->getActivities()->count()) {
+                    $userActivity = $userMessage->getActivities([
+                        'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
+                        'bind' => [
+                            'from_entity_id' => $entity->getId(),
+                            'type' => $activity['type'],
+                            'text' => $activity['text'],
+                            'username' => $activity['username']
+                        ]
+                    ]);
+                    $userActivity->delete();
+                    if (!$userMessage->getActivities()->count()) {
+                        $userMessage->delete();
+                    }
+                    continue;
                 }
-                continue;
+                $userMessage->delete();
+                Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
             }
-            $userMessage->delete();
-            Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
         }
     }
     /**
