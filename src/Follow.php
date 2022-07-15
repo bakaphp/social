@@ -268,7 +268,7 @@ class Follow
                         'messages_id' => $message->getId(),
                     ]
                 ]);
-                if ($$userMessage && $userMessage->getActivities()->count()) {
+                if ($userMessage && $userMessage->getActivities()->count()) {
                     $userActivity = $userMessage->getActivities([
                         'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
                         'bind' => [
