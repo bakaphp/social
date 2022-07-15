@@ -264,11 +264,11 @@ class Follow
                 $userMessage = UserMessages::findFirst([
                     'conditions' => 'users_id = :users_id: AND messages_id = :messages_id:',
                     'bind' => [
-                        'users_id' => $follow->user->id,
-                        'messages_id' => $message->id,
+                        'users_id' => $follow->user->getId(),
+                        'messages_id' => $message->getId(),
                     ]
                 ]);
-                if ($userMessage->getActivities()->count()) {
+                if ($$userMessage && $userMessage->getActivities()->count()) {
                     $userActivity = $userMessage->getActivities([
                         'conditions' => 'from_entity_id = :from_entity_id: AND type = :type: AND text = :text: AND username = :username:',
                         'bind' => [
