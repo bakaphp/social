@@ -289,7 +289,7 @@ class Follow
                     continue;
                 }
                 
-                if($u$userMessage) {
+                if($userMessage) {
                     $userMessage->delete();
                 }
                 //Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
