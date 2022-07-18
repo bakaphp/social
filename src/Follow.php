@@ -278,14 +278,21 @@ class Follow
                             'username' => $activity['username']
                         ]
                     ]);
-                    $userActivity->delete();
+                    
+                    if($userActivity) {
+                        $userActivity->delete();
+                    }
+                    
                     if (!$userMessage->getActivities()->count()) {
                         $userMessage->delete();
                     }
                     continue;
                 }
-                $userMessage->delete();
-                Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
+                
+                if($u$userMessage) {
+                    $userMessage->delete();
+                }
+                //Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
             }
         }
     }
