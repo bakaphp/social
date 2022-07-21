@@ -18,7 +18,9 @@ final class ActivitiesUserMessage extends AbstractMigration
      */
     public function change(): void
     {
-        $this->table('user_messages_activities')
+        $this->table('user_messages_activities', [
+                'collation' => 'utf8mb4_general_ci'
+            ])
             ->addColumn('user_messages_id', 'integer', ['null' => false])
             ->addColumn('from_entity_id', 'integer', ['null' => false])
             ->addColumn('type', 'string', ['null' => false])
