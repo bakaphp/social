@@ -45,14 +45,6 @@ class UsersInteractions extends BaseModel
                 ]
             ]
         );
-        $this->belongsTo(
-            'interactions_id',
-            Interactions::class,
-            'id',
-            [
-                'alias' => 'interactions'
-            ]
-        );
     }
 
     /**
@@ -63,6 +55,15 @@ class UsersInteractions extends BaseModel
         parent::initialize();
 
         $this->setSource('users_interactions');
+        
+        $this->belongsTo(
+            'interactions_id',
+            Interactions::class,
+            'id',
+            [
+                'alias' => 'interactions'
+            ]
+        );
     }
 
     /**
