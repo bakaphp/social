@@ -120,9 +120,10 @@ class UsersFollows extends BaseModel
      */
     public function afterCreate()
     {
-        if (method_exists(get_parent_class($this), 'afterCreate')) {
+        if (is_callable('parent::afterCreate')) {
             parent::afterCreate();
         }
+        
         $this->fireToQueue('kanvas.social.follow:afterCreate', $this);
     }
 
@@ -133,9 +134,10 @@ class UsersFollows extends BaseModel
      */
     public function afterSave()
     {
-        if (method_exists(get_parent_class($this), 'afterSave')) {
+        if (is_callable('parent::afterSave')) {
             parent::afterSave();
         }
+        
         $this->fireToQueue('kanvas.social.follow:afterSave', $this);
         $users = Users::findFirstOrFail($this->users_id);
         Interactions::add($users, $this->entity_namespace::findFirst($this->entity_id), UsersInteractions::FOLLOWING);
