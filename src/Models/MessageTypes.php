@@ -82,13 +82,20 @@ class MessageTypes extends BaseModel
      */
     public static function getTypeByVerb(string $verb) : ?self
     {
-        return MessageTypes::findFirst([
-            'conditions' => 'verb = :verb: AND apps_id IN (:currentAppId:, :defaultApp:) AND is_deleted = 0',
-            'bind' => [
+        return MessageTypes::findFirstOrCreate(
+            [
+                'conditions' => 'verb = :verb: AND apps_id IN (:currentAppId:, :defaultApp:) AND is_deleted = 0',
+                'bind' => [
+                    'verb' => $verb,
+                    'currentAppId' => Di::getDefault()->get('app')->getId(),
+                    'defaultApp' => App::CORE_APP_ID
+                ]
+            ],
+            [
                 'verb' => $verb,
-                'currentAppId' => Di::getDefault()->get('app')->getId(),
-                'defaultApp' => App::CORE_APP_ID
+                'apps_id' => Di::getDefault()->get('app')->getId(),
+                'languages_id' => Di::getDefault()->get('language')->getId()
             ]
-        ]);
+        );
     }
 }
