@@ -78,9 +78,9 @@ class MessageTypes extends BaseModel
      * @param string $verb
      * @param UserInterface $user
      *
-     * @return self | null
+     * @return self
      */
-    public static function getTypeByVerb(string $verb) : ?self
+    public static function getTypeByVerb(string $verb) : self
     {
         return MessageTypes::findFirstOrCreate(
             [
