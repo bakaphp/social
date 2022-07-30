@@ -120,7 +120,7 @@ class UsersFollows extends BaseModel
      */
     public function afterCreate()
     {
-        if (is_callable('parent::afterCreate')) {
+        if (method_exists(get_parent_class($this), 'afterCreate')) {
             parent::afterCreate();
         }
         
@@ -134,7 +134,7 @@ class UsersFollows extends BaseModel
      */
     public function afterSave()
     {
-        if (is_callable('parent::afterSave')) {
+        if (method_exists(get_parent_class($this), 'afterSave')) {
             parent::afterSave();
         }
         
