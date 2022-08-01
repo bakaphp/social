@@ -10,6 +10,7 @@ use Canvas\Contracts\Controllers\ProcessOutputMapperTrait;
 use Kanvas\Social\Comments\Models\Messages;
 use Kanvas\Social\Dto\Comments as CommentsDto;
 use Kanvas\Social\Mappers\Comments as CommentsMapper;
+use Kanvas\Social\Models\Messages as ModelsMessages;
 use Kanvas\Social\Models\Users;
 use Kanvas\Social\Services\Comments;
 use Phalcon\Http\Response;
@@ -31,7 +32,7 @@ trait CommentableController
     /**
      *  Lead variable.
      */
-    protected Messages $message;
+    protected ModelsMessages $message;
 
     /**
      * set objects.
@@ -46,7 +47,7 @@ trait CommentableController
 
         $this->parentId = (int) $this->router->getParams()['messageId'];
 
-        $this->message = Messages::findFirstOrFail([
+        $this->message = ModelsMessages::findFirstOrFail([
             'conditions' => 'id = :messages_id: 
                             AND apps_id = :apps_id:
                             AND companies_id = :companies_id:
