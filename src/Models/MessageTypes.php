@@ -93,8 +93,9 @@ class MessageTypes extends BaseModel
             ],
             [
                 'verb' => $verb,
-                'currentAppId' => Di::getDefault()->get('app')->getId(),
-                'defaultApp' => App::CORE_APP_ID
+                'apps_id' => Di::getDefault()->get('app')->getId(),
+                'name' => $verb,
+                'languages_id' => 1
             ]
         );
     }
