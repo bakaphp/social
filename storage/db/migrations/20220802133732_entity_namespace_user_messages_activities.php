@@ -21,7 +21,7 @@ final class EntityNamespaceUserMessagesActivities extends AbstractMigration
         $this->table('user_messages_activities')
             ->addColumn('entity_namespace', 'string', [
                 'limit' => 255,
-                'null' => false,
+                'null' => true,
                 'collation' => 'utf8mb4_unicode_520_ci',
                 'encoding' => 'utf8mb4',
                 'after' => 'from_entity_id',
