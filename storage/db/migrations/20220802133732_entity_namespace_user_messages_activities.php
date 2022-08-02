@@ -23,8 +23,8 @@ final class EntityNamespaceUserMessagesActivities extends AbstractMigration
                 'default' => null,
                 'limit' => 255,
                 'null' => false,
-                'collation' => 'latin1_swedish_ci',
-                'encoding' => 'latin1',
+                'collation' => 'utf8mb4_unicode_520_ci',
+                'encoding' => 'utf8mb4',
                 'after' => 'from_entity_id',
             ])
             ->save();
