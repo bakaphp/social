@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kanvas\Social\Contracts\Messages;
 
-interface MessageableEntityInterface
+use Baka\Contracts\Database\ModelInterface;
+
+interface MessageableEntityInterface extends ModelInterface
 {
     public function getId();
 }
