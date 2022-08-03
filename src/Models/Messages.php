@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kanvas\Social\Models;
 
 use Baka\Contracts\Auth\UserInterface;
+use Baka\Contracts\Database\ModelInterface;
 use Baka\Contracts\Elasticsearch\ElasticIndexModelTrait;
 use function Baka\isJson;
 use Canvas\Contracts\CustomFields\CustomFieldsTrait;
@@ -269,11 +270,11 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
     /**
      * Attach a System Module to this message.
      *
-     * @param MessageableEntityInterface $entity
+     * @param ModelInterface $entity
      *
      * @return AppModuleMessage
      */
-    public function addSystemModules(MessageableEntityInterface $entity) : AppModuleMessage
+    public function addSystemModules(ModelInterface $entity) : AppModuleMessage
     {
         $newAppModule = new AppModuleMessage();
         $newAppModule->message_id = $this->getId();

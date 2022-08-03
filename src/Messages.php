@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
-use Kanvas\Social\Contracts\Messages\MessageableEntityInterface;
+use Baka\Contracts\Database\ModelInterface;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\GenerateTags;
 use Kanvas\Social\Jobs\RemoveMessagesFeed;
@@ -101,7 +101,7 @@ class Messages
         UserInterface $user,
         string $verb,
         array $message = [],
-        ?MessageableEntityInterface $object = null,
+        ?ModelInterface $object = null,
         bool $sendToUserFeeds = true
     ) : MessagesInterface {
         $newMessage = new MessagesModel();
@@ -142,7 +142,7 @@ class Messages
         UserInterface $user,
         string $verb,
         MessagesInterface $newMessage,
-        MessageableEntityInterface $object,
+        ModelInterface $object,
         bool $sendToUserFeeds = true
     ) : MessagesInterface {
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
