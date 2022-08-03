@@ -7,7 +7,7 @@ namespace Kanvas\Social\Models;
 class UserMessagesActivities extends BaseModel
 {
     public int $user_messages_id;
-    public string $entity_namespace;
+    public ?string $entity_namespace;
     public int $from_entity_id;
     public string $type;
     public ?string $username = null;
