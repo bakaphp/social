@@ -309,6 +309,7 @@ class Follow
         $activities = new UserMessagesActivities();
         $activities->user_messages_id = $feed->getId();
         $activities->from_entity_id = $from->getId();
+        $activities->entity_namespace = $activity['classname'];
         $activities->type = $activity['type'];
         $activities->text = $activity['text'];
         $activities->username = $activity['username'];
