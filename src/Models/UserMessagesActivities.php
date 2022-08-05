@@ -7,7 +7,7 @@ namespace Kanvas\Social\Models;
 class UserMessagesActivities extends BaseModel
 {
     public int $user_messages_id;
-    public ?string $entity_namespace;
+    public ?string $entity_namespace = null;
     public int $from_entity_id;
     public string $type;
     public ?string $username = null;
@@ -21,15 +21,17 @@ class UserMessagesActivities extends BaseModel
      */
     public function afterFetch()
     {
-        $this->hasOne(
-            'from_entity_id',
-            $this->entity_namespace,
-            'id',
-            [
-                'reusable' => true,
-                'alias' => 'entityData'
-            ]
-        );
+        if($this->entity_namespace !== null) {
+            $this->hasOne(
+                'from_entity_id',
+                $this->entity_namespace,
+                'id',
+                [
+                    'reusable' => true,
+                    'alias' => 'entityData'
+                ]
+            );
+        }
     }
 
     /**
