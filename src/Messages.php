@@ -198,7 +198,7 @@ class Messages
      *
      * @return MessagesModel
      */
-    public static function getMessageFrom(MessagesInterface $object) : MessagesModel
+    public static function getMessageFrom(ModelInterface $object) : MessagesModel
     {
         $module = AppModuleMessage::findFirstOrFail([
             'conditions' => 'system_modules = :objectNamespace: AND entity_id = :entityId: AND
