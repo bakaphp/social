@@ -41,6 +41,33 @@ Update total fields limit for message index
 curl -s -XPUT https://{elastichost}/messages/_settings  -H 'Content-Type: application/json' -d '{"index.mapping.total_fields.limit": 100}'
 ```
 
+Allow all object properties of a specific index to be nested , allowing use to use multi nested level query proper.index.property.index 
+Example
+```
+{{URL}}/{{VERSION}}/messages?q=(chs.slug:d54d8317-89bf-4380-acc3-9941d46cf95a,rlmsg.activities_status.id:2)&format=true
+```
+```
+curl -s -XPUT https://{elastichost}/_template/social_messages  -H 'Content-Type: application/json' -d '{
+"index_patterns": [
+    "message*"
+  ],
+  "mappings": {
+      "dynamic_templates": [
+        {
+          "nested": {
+            "match_mapping_type": "object",
+            "mapping": {
+              "type": "nested"
+            }
+          }
+        }
+      ]
+  }
+}'
+```
+
+
+
 
 Running Tests:
 --------
