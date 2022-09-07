@@ -1,18 +1,17 @@
 <?php
 
-declare(strict_types = 1);
-
+declare(strict_types=1);
 namespace Kanvas\Social\Models;
 
 class UserMessagesActivities extends BaseModel
 {
-    public int $user_messages_id;
+    public int $user_messages_id = 0;
     public ?string $entity_namespace = null;
-    public int $from_entity_id;
-    public string $type;
+    public int $from_entity_id = 0;
+    public ?string $type = null;
     public ?string $username = null;
-    public string $text;
-    
+    public ?string $text = null;
+
     /**
      * Initialize relationship after fetch
      * since we need entity_namespace info.
@@ -21,7 +20,7 @@ class UserMessagesActivities extends BaseModel
      */
     public function afterFetch()
     {
-        if($this->entity_namespace !== null) {
+        if ($this->entity_namespace !== null) {
             $this->hasOne(
                 'from_entity_id',
                 $this->entity_namespace,
