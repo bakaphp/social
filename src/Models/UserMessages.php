@@ -78,10 +78,10 @@ class UserMessages extends BaseModel
      *
      * @return ?Collection
      */
-    public function getActivity() : ?Collection
+    public function getActivity() : ?array
     {
         if (isJson($this->activities)) {
-            return collect(json_decode($this->activities, true));
+           return json_decode($this->activities, true);
         }
         return null;
     }
