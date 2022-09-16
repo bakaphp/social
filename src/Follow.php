@@ -235,7 +235,7 @@ class Follow
         if (!$lastActivity) {
             return [];
         }
-        $countActivty = $feed->getActivities([
+        $countActivty = $feed->countActivities([
             'conditions' => 'type = :type:',
             'bind' => [
                 'type' => $lastActivity->type
@@ -243,7 +243,7 @@ class Follow
         ]);
         $userMessageActivity = [
             'notes' => $feed->notes,
-            'message_activity_count' => $countActivty->count(),
+            'message_activity_count' => $countActivty,
             'message_type_activity' => $lastActivity->type,
             'message_activity_username' => $lastActivity->entityData->displayname ?? $lastActivity->entityData->name,
             'message_activity_text' => $lastActivity->text
