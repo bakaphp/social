@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
@@ -173,7 +172,6 @@ class Follow
         ]);
     }
 
-
     /**
      * addToFeed.
      *
@@ -216,6 +214,43 @@ class Follow
         if ($activities) {
             self::addActivities($from, $feed, $activities);
         }
+        self::fillActivity($feed);
+    }
+
+    /**
+     * fillActivity
+     *
+     * @param  UserMessages $feed
+     * @return void
+     */
+    public static function fillActivity(UserMessages $feed): array
+    {
+        $lastActivity = UserMessagesActivities::findFirst([
+            'conditions' => 'user_messages_id = :feedId: AND is_deleted = 0',
+            'order' => 'id DESC',
+            'bind' => [
+                'feedId' => $feed->getId()
+            ],
+        ]);
+        if (!$lastActivity) {
+            return [];
+        }
+        $countActivty = $feed->getActivities([
+            'conditions' => 'type = :type:',
+            'bind' => [
+                'type' => $lastActivity->type
+            ]
+        ]);
+        $userMessageActivity = [
+            'notes' => $feed->notes,
+            'message_activity_count' => $countActivty,
+            'message_type_activity' => $lastActivity->type,
+            'message_activity_username' => $lastActivity->entityData->displayname,
+            'message_activity_text' => $lastActivity->text
+        ];
+        $feed->activities = json_encode($userMessageActivity);
+        $feed->saveOrFail();
+        return $userMessageActivity;
     }
 
     /**
@@ -278,24 +313,25 @@ class Follow
                             'username' => $activity['username']
                         ]
                     ]);
-                    
-                    if($userActivity) {
+
+                    if ($userActivity) {
                         $userActivity->delete();
                     }
-                    
+
                     if (!$userMessage->getActivities()->count()) {
                         $userMessage->delete();
                     }
                     continue;
                 }
-                
-                if($userMessage) {
+
+                if ($userMessage) {
                     $userMessage->delete();
                 }
                 //Di::getDefault()->get('log')->info('Delete Feed by user ' . $follow->user->id . ' Entity ' . $entity->getId());
             }
         }
     }
+
     /**
      * addActivities.
      *
