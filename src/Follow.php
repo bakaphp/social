@@ -245,7 +245,7 @@ class Follow
             'notes' => $feed->notes,
             'message_activity_count' => $countActivty,
             'message_type_activity' => $lastActivity->type,
-            'message_activity_username' => $lastActivity->entityData->displayname,
+            'message_activity_username' => $lastActivity->entityData->displayname ?? $lastActivity->entityData->name,
             'message_activity_text' => $lastActivity->text
         ];
         $feed->activities = json_encode($userMessageActivity);
