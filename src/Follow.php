@@ -241,11 +241,14 @@ class Follow
                 'type' => $lastActivity->type
             ]
         ]);
+        $entityData = $lastActivity->entity_namespace::findFirst($this->from_entity_id);
+        $username = $entityData->displayname ?? $entityData->name;
+        $username = $name ?? '';
         $userMessageActivity = [
             'notes' => $feed->notes,
             'message_activity_count' => $countActivty,
             'message_type_activity' => $lastActivity->type,
-            'message_activity_username' => $lastActivity->entityData->displayname ?? $lastActivity->entityData->name,
+            'message_activity_username' => $username,
             'message_activity_text' => $lastActivity->text
         ];
         $feed->activities = json_encode($userMessageActivity);
