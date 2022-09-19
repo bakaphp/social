@@ -241,7 +241,7 @@ class Follow
                 'type' => $lastActivity->type
             ]
         ]);
-        if (class_exists($lastActivity->entity_namespace)) {
+        if ($lastActivity->entity_namespace && class_exists($lastActivity->entity_namespace)) {
             $entityData = $lastActivity->entity_namespace::findFirst($this->from_entity_id);
             $username = $entityData->displayname ?? $entityData->name;
         }
