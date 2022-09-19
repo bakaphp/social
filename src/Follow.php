@@ -241,9 +241,11 @@ class Follow
                 'type' => $lastActivity->type
             ]
         ]);
-        $entityData = $lastActivity->entity_namespace::findFirst($this->from_entity_id);
-        $username = $entityData->displayname ?? $entityData->name;
-        $username = $name ?? '';
+        if (class_exists($lastActivity->entity_namespace)) {
+            $entityData = $lastActivity->entity_namespace::findFirst($this->from_entity_id);
+            $username = $entityData->displayname ?? $entityData->name;
+        }
+        $username = $username ?? '';
         $userMessageActivity = [
             'notes' => $feed->notes,
             'message_activity_count' => $countActivty,
