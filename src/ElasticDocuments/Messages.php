@@ -207,7 +207,7 @@ class Messages extends Documents
             'comments_count' => $message->countComments('is_deleted = 0'),
             'related_messages_count' => $message->countRelatedMessages('is_deleted = 0'),
             'files' => $message->getFiles(),
-            'custom_fields' => $message->getAllCustomFields(),
+            'custom_fields' => $this->formatCustomData($message->getAllCustomFields()),
             'related_messages' => $this->formatRelatedMessages($message),
             'channels' => $message->channels->getFirst() ? [
                 'id' => $message->channels->getFirst()->id,
@@ -270,5 +270,13 @@ class Messages extends Documents
         }
 
         return $messageData;
+    }
+
+    /**
+     * Update custom fields
+     */
+    public function formatCustomData(array $customFields) : void
+    {
+        unset($customFields['custom_fields']);
     }
 }
