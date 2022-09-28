@@ -274,6 +274,8 @@ class Messages extends Documents
 
     /**
      * Update custom fields
+     * 
+     * @return void
      */
     public function formatCustomData(array $customFields) : void
     {
