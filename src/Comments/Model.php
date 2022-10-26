@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kanvas\Social\Comments;
 
 use Baka\Contracts\Auth\UserInterface;
+use Canvas\Contracts\EventManagerAwareTrait;
 use Canvas\Contracts\FileSystemModelTrait;
 use Canvas\Models\Users;
 use Kanvas\Social\Contracts\Comments\Comments;
@@ -16,6 +17,7 @@ class Model extends BaseModel implements Comments
 {
     use EntityInteractionsTrait;
     use FileSystemModelTrait;
+    use EventManagerAwareTrait;
 
     public $id;
     public int $apps_id;

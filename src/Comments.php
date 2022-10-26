@@ -90,8 +90,9 @@ class Comments
     public static function reply(string $commentId, string $message, UserInterface $user) : MessageComments
     {
         $comment = MessageComments::getByIdOrFail($commentId);
-
-        return $comment->reply($message, $user);
+        $reply = $comment->reply($message, $user);
+        $reply->fireToQueue('comment:reply', $reply);
+        return $reply;
     }
 
     /**
