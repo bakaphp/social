@@ -190,6 +190,9 @@ class Follow
         ?array $notes = null,
         ?array $activities = null
     ) : void {
+        if ($message->users_id == $user->getId()) {
+            return;
+        }
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
             'bind' => [
