@@ -246,7 +246,7 @@ class Follow
         ]);
         if ($lastActivity->entity_namespace && class_exists($lastActivity->entity_namespace)) {
             $entityData = $lastActivity->entity_namespace::findFirst($lastActivity->from_entity_id);
-            $username = $entityData->displayname ?? $entityData->name;
+            $username = $entityData->displayname ?? '';
         }
         $username = $username ?? '';
         $userMessageActivity = [
