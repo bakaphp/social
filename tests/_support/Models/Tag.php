@@ -18,4 +18,15 @@ class Tag extends BaseModel implements FollowableInterface
     {
         return $this->id;
     }
+
+    /**
+     * initialize.
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $this->setSource('tags');
+    }
 }

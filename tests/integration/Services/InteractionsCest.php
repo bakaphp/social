@@ -7,14 +7,23 @@ use Kanvas\Social\Enums\Interactions as EnumsInteractions;
 use Kanvas\Social\Interactions;
 use Kanvas\Social\Models\Interactions as ModelsInteractions;
 use Kanvas\Social\Models\Tags;
+use Kanvas\Social\Tags as SocialTags;
 use Kanvas\Social\Test\Support\Models\Users;
 
 class InteractionsCest
 {
+    public function before(IntegrationTester $I)
+    {
+        $tag = SocialTags::create(Users::findFirst(1), 'Tag for test');
+    }
+
     public function likeEntity(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $likeTag = $user->likes($tag);
 
@@ -24,7 +33,9 @@ class InteractionsCest
     public function shareEntity(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $likeTag = $user->share($tag);
 
@@ -34,7 +45,9 @@ class InteractionsCest
     public function addToListEntity(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $likeTag = $user->addToList($tag);
 
@@ -44,7 +57,9 @@ class InteractionsCest
     public function hasLikedEntity(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $likeTag = $user->hasInteracted($tag, EnumsInteractions::LIKE);
 
@@ -54,7 +69,9 @@ class InteractionsCest
     public function removeInteraction(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $likeTag = $user->removeInteraction($tag, EnumsInteractions::SAVE);
 
@@ -64,7 +81,9 @@ class InteractionsCest
     public function getTotalInteractionsByUser(IntegrationTester $I) : void
     {
         $user = Users::findFirst(1);
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $user->interact($tag, EnumsInteractions::RATE);
         $totalInteractions = $user->getTotalInteractions(Tags::class, EnumsInteractions::RATE);
@@ -74,7 +93,9 @@ class InteractionsCest
 
     public function getTotalInteractionsByEntity(IntegrationTester $I) : void
     {
-        $tag = Tags::findFirst(1);
+        $tag = Tags::findFirst([
+            'order' => 'id DESC'
+        ]);
 
         $totalInteractions = Interactions::getTotalByEntity($tag, EnumsInteractions::RATE);
 
