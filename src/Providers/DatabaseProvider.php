@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace Kanvas\Social\Providers;
 
 use Exception;
@@ -26,7 +25,7 @@ class DatabaseProvider implements ServiceProviderInterface
                     'username' => getenv('DATA_API_SOCIAL_MYSQL_USER'),
                     'password' => getenv('DATA_API_SOCIAL_MYSQL_PASS'),
                     'dbname' => getenv('DATA_API_SOCIAL_MYSQL_NAME'),
-                    'charset' => 'utf8',
+                    'charset' => 'utf8mb4',
                     'options' => [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
                         PDO::ATTR_EMULATE_PREPARES => false,
