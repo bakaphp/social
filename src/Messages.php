@@ -6,6 +6,7 @@ namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
 use Baka\Contracts\Database\ModelInterface;
+use Canvas\Models\Companies;
 use Kanvas\Social\Contracts\Messages\MessagesInterface;
 use Kanvas\Social\Jobs\GenerateTags;
 use Kanvas\Social\Jobs\RemoveMessagesFeed;
@@ -102,11 +103,12 @@ class Messages
         string $verb,
         array $message = [],
         ?ModelInterface $object = null,
-        bool $sendToUserFeeds = true
+        bool $sendToUserFeeds = true,
+        ?Companies $company = null
     ) : MessagesInterface {
         $newMessage = new MessagesModel();
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
-        $newMessage->companies_id = $user->getDefaultCompany()->getId();
+        $newMessage->companies_id = $company === null ? $user->getDefaultCompany()->getId() : $company->getId();
         $newMessage->users_id = (int) $user->getId();
         $newMessage->message_types_id = MessageTypesModel::getTypeByVerb($verb)->getId();
         $newMessage->message = json_encode($message);
@@ -143,10 +145,11 @@ class Messages
         string $verb,
         MessagesInterface $newMessage,
         ModelInterface $object,
-        bool $sendToUserFeeds = true
+        bool $sendToUserFeeds = true,
+        ?Companies $company = null
     ) : MessagesInterface {
         $newMessage->apps_id = Di::getDefault()->get('app')->getId();
-        $newMessage->companies_id = $user->getDefaultCompany()->getId();
+        $newMessage->companies_id = $company === null ? $user->getDefaultCompany()->getId() : $company->getId();
         $newMessage->users_id = (int) $user->getId();
         $newMessage->message_types_id = MessageTypesModel::getTypeByVerb($verb)->getId();
         $newMessage->created_at = date('Y-m-d H:i:s');
