@@ -26,6 +26,7 @@ class AppModuleMessage extends BaseModel
             MessageTypes::class,
             'id',
             [
+                'reusable' => true,
                 'alias' => 'messageType',
                 'params' => [
                     'conditions' => 'is_deleted = 0'
@@ -38,7 +39,6 @@ class AppModuleMessage extends BaseModel
             Messages::class,
             'id',
             [
-                'reusable' => true,
                 'alias' => 'message'
             ]
         );
