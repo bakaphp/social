@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
@@ -221,12 +222,13 @@ class Follow
     }
 
     /**
-     * fillActivity
+     * fillActivity.
      *
      * @param  UserMessages $feed
-     * @return void
+     *
+     * @return array
      */
-    public static function fillActivity(UserMessages $feed): array
+    public static function fillActivity(UserMessages $feed) : array
     {
         $lastActivity = UserMessagesActivities::findFirst([
             'conditions' => 'user_messages_id = :feedId: AND is_deleted = 0',
@@ -238,7 +240,7 @@ class Follow
         if (!$lastActivity) {
             return [];
         }
-        $countActivty = $feed->countActivities([
+        $countActivity = $feed->countActivities([
             'conditions' => 'type = :type:',
             'bind' => [
                 'type' => $lastActivity->type
@@ -251,7 +253,7 @@ class Follow
         $username = $username ?? '';
         $userMessageActivity = [
             'notes' => $feed->notes,
-            'message_activity_count' => $countActivty,
+            'message_activity_count' => $countActivity,
             'message_type_activity' => $lastActivity->type,
             'message_activity_username' => $username,
             'message_activity_text' => $lastActivity->text
