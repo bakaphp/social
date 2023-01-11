@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Kanvas\Social\Models;
 
 class UserMessagesActivities extends BaseModel
