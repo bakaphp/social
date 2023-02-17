@@ -79,7 +79,7 @@ class UsersFollows extends BaseModel
                 $this->user->decrees(Interactions::FOLLOWING, $this->entity_namespace);
             }
         }
-        $this->fireToQueue('kanvas.social.unfollow', $this);
+        $this->fireToQueue('kanvas.social.unfollow:afterUpdate', $this);
         return $this->isFollowing();
     }
 
