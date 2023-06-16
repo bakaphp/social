@@ -14,14 +14,8 @@ class UserMessages
 {
     /**
      * Get all the messages of a user.
-     *
-     * @param UserInterface $user
-     * @param int $limit
-     * @param int $page
-     *
-     * @return Simple
      */
-    public static function getAllAsUserMessages(UserInterface $user, int $page = 1, int $limit = 25) : Simple
+    public static function getAllAsUserMessages(UserInterface $user, int $page = 1, int $limit = 25): Simple
     {
         $appData = Di::getDefault()->get('app');
 
@@ -47,7 +41,7 @@ class UserMessages
                     'userId' => $user->getId(),
                     'limit' => $limit,
                     'offset' => $offSet,
-                    'appId' => $appData->getId()
+                    'appId' => $appData->getId(),
 
                 ]
             )
@@ -56,14 +50,8 @@ class UserMessages
 
     /**
      * Get all the messages of a user.
-     *
-     * @param UserInterface $user
-     * @param int $limit
-     * @param int $page
-     *
-     * @return Simple
      */
-    public static function getAll(UserInterface $user, int $page = 1, int $limit = 25) : Simple
+    public static function getAll(UserInterface $user, int $page = 1, int $limit = 25): Simple
     {
         $appData = Di::getDefault()->get('app');
 
@@ -74,9 +62,18 @@ class UserMessages
             null,
             $message,
             $message->getReadConnection()->query(
-                'SELECT *
+                'SELECT DISTINCT user_messages.messages_id, 
+                user_messages.users_id,
+                user_messages.notes, 
+                user_messages.is_liked, 
+                user_messages.is_saved, 
+                user_messages.is_shared, 
+                user_messages.is_reported, 
+                user_messages.reactions, 
+                user_messages.saved_lists, 
+                user_messages.activities, 
             FROM 
-                user_messages
+                user_messages 
                 LEFT JOIN 
                 messages on messages.id = user_messages.messages_id 
             WHERE user_messages.users_id = :userId
@@ -89,7 +86,7 @@ class UserMessages
                     'userId' => $user->getId(),
                     'limit' => $limit,
                     'offset' => $offSet,
-                    'appId' => $appData->getId()
+                    'appId' => $appData->getId(),
 
                 ]
             )
@@ -98,32 +95,27 @@ class UserMessages
 
     /**
      * getInteractions.
-     *
-     * @param  UserInterface $user
-     * @param  MessagesModel $message
-     *
-     * @return array
      */
-    public static function getInteractions(UserInterface $user, MessagesModel $message) : array
+    public static function getInteractions(UserInterface $user, MessagesModel $message): array
     {
         $userMessages = UserMessagesModel::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
             'bind' => [
                 'userId' => $user->getId(),
                 'messageId' => $message->getId(),
-            ]
+            ],
         ]);
 
         $activity = $userMessages->getActivities([
-            'sort' => 'id ASC'
+            'sort' => 'id ASC',
         ]);
         $activity = $activity ? $activity->getFirst() : null;
         $count = $userMessages->countActivities([
             'sort' => 'id DESC',
             'conditions' => 'type = :type:',
             'bind' => [
-                'type' => $activity ? $activity->type : null
-            ]
+                'type' => $activity ? $activity->type : null,
+            ],
         ]);
 
         return  [
@@ -138,14 +130,11 @@ class UserMessages
             'message_activity_text' => $activity ? $activity->text : '',
         ];
     }
+
     /**
      * Get the count of all user messages.
-     *
-     * @param UserInterface $user
-     *
-     * @return int
      */
-    public static function getCount(UserInterface $user) : int
+    public static function getCount(UserInterface $user): int
     {
         $appData = Di::getDefault()->get('app');
         $message = new MessagesModel();
@@ -165,7 +154,7 @@ class UserMessages
             AND messages.apps_id = :appId',
                 [
                     'userId' => 333,
-                    'appId' => $appData->getId()
+                    'appId' => $appData->getId(),
 
                 ]
             )
@@ -174,16 +163,12 @@ class UserMessages
         return $result[0]->count;
     }
 
-
     /**
      * like.
      *
-     * @param  UserInterface $user
      * @param  MessagesModel $model
-     *
-     * @return void
      */
-    public static function like(UserInterface $user, MessagesModel $message) : void
+    public static function like(UserInterface $user, MessagesModel $message): void
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
@@ -191,7 +176,7 @@ class UserMessages
                 'bind' => [
                     'userId' => $user->getId(),
                     'messageId' => $message->getId(),
-                ]
+                ],
             ],
             [
                 'is_deleted' => 1,
@@ -203,16 +188,10 @@ class UserMessages
         $userMessages->saveOrFail();
     }
 
-
     /**
      * save.
-     *
-     * @param  UserInterface $user
-     * @param  MessagesModel $message
-     *
-     * @return void
      */
-    public static function save(UserInterface $user, MessagesModel $message) : void
+    public static function save(UserInterface $user, MessagesModel $message): void
     {
         $userMessages = UserMessagesModel::findFirstOrCreate(
             [
@@ -220,7 +199,7 @@ class UserMessages
                 'bind' => [
                     'userId' => $user->getId(),
                     'messageId' => $message->getId(),
-                ]
+                ],
             ],
             [
                 'is_deleted' => 1,
