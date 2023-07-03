@@ -71,7 +71,7 @@ class UserMessages
                 user_messages.is_reported, 
                 user_messages.reactions, 
                 user_messages.saved_lists, 
-                user_messages.activities, 
+                user_messages.activities
             FROM 
                 user_messages 
                 LEFT JOIN 
