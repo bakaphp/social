@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Kanvas\Social;
 
 use Baka\Contracts\Auth\UserInterface;
@@ -18,20 +19,15 @@ class Follow
 {
     /**
      * Return the data of entities that the user follows.
-     *
-     * @param UserInterface $user
-     * @param ModelInterface $entity
-     *
-     * @return Simple
      */
-    public static function getFollowsByUser(UserInterface $user, ModelInterface $entity) : Simple
+    public static function getFollowsByUser(UserInterface $user, ModelInterface $entity): Simple
     {
         $userFollows = UsersFollows::find([
             'conditions' => 'users_id = :user_id: AND entity_namespace = :entity: AND is_deleted = 0',
             'bind' => [
                 'user_id' => $user->getId(),
                 'entity' => get_class($entity),
-            ]
+            ],
         ]);
 
         return $userFollows;
@@ -42,10 +38,8 @@ class Follow
      *
      * @param UserInterface $userFollowing User that is following
      * @param ModelInterface $entity Entity that is being followed
-     *
-     * @return bool
      */
-    public static function userFollow(UserInterface $user, ModelInterface $entity) : bool
+    public static function userFollow(UserInterface $user, ModelInterface $entity): bool
     {
         return self::follow($user, $entity);
     }
@@ -54,11 +48,8 @@ class Follow
      * Allow a User to follow a entity.
      *
      * @param UserInterface $userFollowing
-     * @param ModelInterface $entity
-     *
-     * @return bool
      */
-    public static function follow(UserInterface $user, ModelInterface $entity) : bool
+    public static function follow(UserInterface $user, ModelInterface $entity): bool
     {
         $follow = UsersFollows::getByUserAndEntity($user, $entity);
 
@@ -87,121 +78,97 @@ class Follow
      * Unfollow an entity.
      *
      * @param UserInterface $userFollowing
-     * @param ModelInterface $entity
-     *
-     * @return bool
      */
-    public static function unFollow(UserInterface $user, ModelInterface $entity) : bool
+    public static function unFollow(UserInterface $user, ModelInterface $entity): bool
     {
         //follows return false when it unfollow, so we reverse it
-        return !self::follow($user, $entity);
+        return ! self::follow($user, $entity);
     }
 
     /**
      * Is a user following an entity?
      *
      * @param UserInterface $userFollowing
-     * @param ModelInterface $entity
-     *
-     * @return bool
      */
-    public static function isFollowing(UserInterface $user, ModelInterface $entity) : bool
+    public static function isFollowing(UserInterface $user, ModelInterface $entity): bool
     {
         return (bool) UsersFollows::count([
             'conditions' => 'users_id = :userId: AND entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
             'bind' => [
                 'userId' => $user->getId(),
                 'entityId' => $entity->getId(),
-                'entityName' => get_class($entity)
-            ]
+                'entityName' => get_class($entity),
+            ],
         ]);
     }
 
     /**
      * Get total followers.
      *
-     * @param UserInterface $user
      * @param ModelInterface $entity
-     *
-     * @return int
      */
-    public static function getTotalFollowing(UserInterface $user, string $entityNamespace) : int
+    public static function getTotalFollowing(UserInterface $user, string $entityNamespace): int
     {
         return  UsersFollows::count([
             'conditions' => 'users_id = :userId:  AND entity_namespace = :entityName: AND is_deleted = 0',
             'bind' => [
                 'userId' => $user->getId(),
-                'entityName' => $entityNamespace
-            ]
+                'entityName' => $entityNamespace,
+            ],
         ]);
     }
 
     /**
      * Get total followers of this entity.
-     *
-     * @param ModelInterface $entity
-     *
-     * @return int
      */
-    public static function getTotalFollowers(ModelInterface $entity) : int
+    public static function getTotalFollowers(ModelInterface $entity): int
     {
         return UsersFollows::count([
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
             'bind' => [
                 'entityId' => $entity->getId(),
-                'entityName' => get_class($entity)
-            ]
+                'entityName' => get_class($entity),
+            ],
         ]);
     }
 
     /**
      * getFollowers.
-     *
-     * @param  ModelInterface $entity
-     *
-     * @return Simple
      */
-    public static function getFollowers(ModelInterface $entity) : Simple
+    public static function getFollowers(ModelInterface $entity): Simple
     {
         return UsersFollows::find([
             'conditions' => 'entity_id = :entityId: AND entity_namespace = :entityName: AND is_deleted = 0',
             'bind' => [
                 'entityId' => $entity->getId(),
-                'entityName' => get_class($entity)
-            ]
+                'entityName' => get_class($entity),
+            ],
         ]);
     }
 
     /**
      * addToFeed.
-     *
-     * @param FollowableInterface $from
-     * @param UserInterface $user
-     * @param MessagesInterface $message
-     * @param array|null $notes
-     * @param array|null $activities
-     *
-     * @return void
      */
     public static function addToFeed(
         FollowableInterface $from,
         UserInterface $user,
         MessagesInterface $message,
         ?array $notes = null,
-        ?array $activities = null
-    ) : void {
+        ?array $activities = null,
+        int $weight = 0
+    ): void {
         if ($message->users_id == $user->getId()) {
-            return;
+            return ;
         }
         $feed = UserMessages::findFirst([
             'conditions' => 'users_id = :userId: AND messages_id = :messageId: AND is_deleted = 0',
             'bind' => [
                 'userId' => $user->getId(),
-                'messageId' => $message->getId()
-            ]
+                'messageId' => $message->getId(),
+            ],
         ]);
 
-        if (!$feed) {
+        if (! $feed) {
             $feed = new UserMessages();
             $feed->users_id = $user->getId();
             $feed->messages_id = $message->getId();
@@ -218,12 +185,14 @@ class Follow
             self::addActivities($from, $feed, $activities);
         }
         self::fillActivity($feed);
+
+        $feed->weight = $weight;
+        $feed->saveOrFail();
     }
 
     /**
      * fillActivity
      *
-     * @param  UserMessages $feed
      * @return void
      */
     public static function fillActivity(UserMessages $feed): array
@@ -232,17 +201,17 @@ class Follow
             'conditions' => 'user_messages_id = :feedId: AND is_deleted = 0',
             'order' => 'id DESC',
             'bind' => [
-                'feedId' => $feed->getId()
+                'feedId' => $feed->getId(),
             ],
         ]);
-        if (!$lastActivity) {
+        if (! $lastActivity) {
             return [];
         }
         $countActivty = $feed->countActivities([
             'conditions' => 'type = :type:',
             'bind' => [
-                'type' => $lastActivity->type
-            ]
+                'type' => $lastActivity->type,
+            ],
         ]);
         if ($lastActivity->entity_namespace && class_exists($lastActivity->entity_namespace)) {
             $entityData = $lastActivity->entity_namespace::findFirst($lastActivity->from_entity_id);
@@ -254,28 +223,25 @@ class Follow
             'message_activity_count' => $countActivty,
             'message_type_activity' => $lastActivity->type,
             'message_activity_username' => $username,
-            'message_activity_text' => $lastActivity->text
+            'message_activity_text' => $lastActivity->text,
         ];
         $feed->activities = json_encode($userMessageActivity);
         $feed->saveOrFail();
+
         return $userMessageActivity;
     }
 
     /**
      * feedToFollowers.
      *
-     * @param  FollowableInterface $entity
-     * @param  MessagesInterface $message
      * @param  array $notes
-     *
-     * @return void
      */
     public static function feedToFollowers(
         FollowableInterface $entity,
         MessagesInterface $message,
         ?array $notes = null,
         ?array $activities = null
-    ) : void {
+    ): void {
         $followers = self::getFollowers($entity);
         foreach ($followers as $follower) {
             if ($follower->user instanceof UserInterface) {
@@ -292,14 +258,8 @@ class Follow
 
     /**
      * removeToFollowers.
-     *
-     * @param  FollowableInterface $entity
-     * @param  MessagesInterface $message
-     * @param  array $activity
-     *
-     * @return void
      */
-    public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity) : void
+    public static function removeToFollowers(FollowableInterface $entity, MessagesInterface $message, array $activity): void
     {
         $followers = self::getFollowers($entity) ;
         foreach ($followers as $follow) {
@@ -309,7 +269,7 @@ class Follow
                     'bind' => [
                         'users_id' => $follow->user->getId(),
                         'messages_id' => $message->getId(),
-                    ]
+                    ],
                 ]);
                 if ($userMessage && $userMessage->getActivities()->count()) {
                     $userActivity = $userMessage->getActivities([
@@ -318,17 +278,18 @@ class Follow
                             'from_entity_id' => $entity->getId(),
                             'type' => $activity['type'],
                             'text' => $activity['text'],
-                            'username' => $activity['username']
-                        ]
+                            'username' => $activity['username'],
+                        ],
                     ]);
 
                     if ($userActivity) {
                         $userActivity->delete();
                     }
 
-                    if (!$userMessage->getActivities()->count()) {
+                    if (! $userMessage->getActivities()->count()) {
                         $userMessage->delete();
                     }
+
                     continue;
                 }
 
@@ -343,12 +304,9 @@ class Follow
     /**
      * addActivities.
      *
-     * @param  UserMessages $feed
      * @param  array $activities
-     *
-     * @return void
      */
-    protected static function addActivities(FollowableInterface $from, UserMessages $feed, ?array $activity = null) : void
+    protected static function addActivities(FollowableInterface $from, UserMessages $feed, ?array $activity = null): void
     {
         $activities = new UserMessagesActivities();
         $activities->user_messages_id = $feed->getId();
