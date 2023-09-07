@@ -36,7 +36,7 @@ class UserMessages
             AND user_messages.weight = :weight
             AND messages.is_deleted = 0
             AND messages.apps_id = :appId
-            ORDER BY user_messages.created_at DESC, RAND()
+            ORDER BY user_messages.created_at DESC
             LIMIT :limit OFFSET :offset',
                 [
                     'userId' => $user->getId(),
