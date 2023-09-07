@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kanvas\Social\Providers;
@@ -20,15 +21,14 @@ class EventsManagerProvider implements ServiceProviderInterface
      * @var array
      */
     protected $listeners = [
-        'socialUser' => Users::class
+        'socialUser' => Users::class,
     ];
 
     /**
-     * @param DiInterface $container
      */
-    public function register(DiInterface $container) : void
+    public function register(DiInterface $container): void
     {
-        if (!$container->has('events')) {
+        if (! $container->has('events')) {
             $container->setShared(
                 'events',
                 function () {
@@ -45,12 +45,9 @@ class EventsManagerProvider implements ServiceProviderInterface
     /**
      * given the DI attach the list of containers.
      *
-     * @param DiInterface $container
-     * @param array $listeners
-     *
      * @return void
      */
-    protected function attachEvents(DiInterface $container, array $listeners) : bool
+    protected function attachEvents(DiInterface $container, array $listeners): bool
     {
         if (empty($listeners)) {
             return false;

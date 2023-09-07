@@ -15,7 +15,7 @@ class UserMessages
     /**
      * Get all the messages of a user.
      */
-    public static function getAllAsUserMessages(UserInterface $user, int $page = 1, int $limit = 25): Simple
+    public static function getAllAsUserMessages(UserInterface $user, int $page = 1, int $limit = 25, int $minWeight = 0): Simple
     {
         $appData = Di::getDefault()->get('app');
 
@@ -33,6 +33,7 @@ class UserMessages
                 messages on messages.id = user_messages.messages_id 
             WHERE user_messages.users_id = :userId
             AND user_messages.is_deleted = 0 
+            AND user_messages.weight >= :weight
             AND messages.is_deleted = 0
             AND messages.apps_id = :appId
             ORDER BY user_messages.created_at DESC
@@ -42,7 +43,7 @@ class UserMessages
                     'limit' => $limit,
                     'offset' => $offSet,
                     'appId' => $appData->getId(),
-
+                    'weight' => $minWeight,
                 ]
             )
         );
