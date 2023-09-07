@@ -33,7 +33,7 @@ class UserMessages
                 messages on messages.id = user_messages.messages_id 
             WHERE user_messages.users_id = :userId
             AND user_messages.is_deleted = 0 
-            AND user_messages.weight = :weight
+            AND user_messages.weight >= :weight
             AND messages.is_deleted = 0
             AND messages.apps_id = :appId
             ORDER BY user_messages.created_at DESC
