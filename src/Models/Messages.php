@@ -32,7 +32,7 @@ class Messages extends BaseModel implements MessagesInterface, MessageableEntity
         CustomFieldsTrait::afterDelete insteadof ElasticIndexModelTrait;
     }
 
-    public int $parent_id = 0;
+    public ?int $parent_id = 0;
     public ?string $parent_unique_id = null;
     public ?string $uuid = null;
     public int $apps_id = 0;
